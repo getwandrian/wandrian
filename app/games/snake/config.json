@@ -1,0 +1,14 @@
+{
+    "squares": [],
+    "entities": [
+        { "x": 10, "y": 10, "type": "Food" }
+    ],
+
+    "player": { "x": 15, "y": 15, "type": "Snake" },
+
+    "worldWidth": 40,
+    "worldHeight": 40,
+    "worldSelector": ".world",
+
+    "loopPeriod": 50
+}

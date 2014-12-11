@@ -1,0 +1,44 @@
+
+body, .console {
+    background-color: #404040;
+    color: #dedede;
+    text-align: center;
+}
+
+.container {
+    width: 1000px;
+    margin: 0 auto;
+}
+
+.snake,
+.snake-segment {
+    background-color: green;
+}
+
+.food {
+    background-color: red;
+}
+
+.world {
+    border: 5px solid #dedede;
+    display: inline-block;
+    margin: 0 auto;
+}
+
+.square {
+    width: 10px;
+    height: 10px;
+}
+
+.entity {
+    width: 10px;
+    height: 10px;
+}
+
+.game-over {
+    display: none;
+}
+
+.game-over, .scores {
+    font-size: 2em;
+}
