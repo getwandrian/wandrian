@@ -111,7 +111,6 @@ W = Wandrian = {
                 newSquare.dirty = true;
             }
         };
-
     },
 
 
@@ -192,7 +191,7 @@ W = Wandrian = {
 
         // This array is redundant (because entities are essentially inside
         // squares), but is a good performance helper
-        this.entities = [];
+        this.entities;
 
         this.player;
 
@@ -313,15 +312,16 @@ W = Wandrian = {
         };
 
         this.removeEntity = function(entity) {
-            for (var i=0; i<this.sizeY; i++) {
-                for (var j=0; j<this.sizeX; j++) {
-                    if (this.squares[j][i].entity == entity) {
+            for (var i=0; i<this.sizeX; i++) {
+                for (var j=0; j<this.sizeY; j++) {
+                    if (this.squares[i][j].entity == entity) {
                         // Remove from DOM
                         entity.el.remove();
 
                         // Remove object
-                        this.squares[j][i].setEntity(null);
+                        this.squares[i][j].setEntity(null);
 
+                        // Remove from redundant entity array
                         this.entities = _.without(this.entities, entity);
 
                         return true;
@@ -337,16 +337,18 @@ W = Wandrian = {
             this.el.empty();
 
             this.squares = [];
-            for (var i=0; i<this.sizeY; i++) {
+            for (var i=0; i<this.sizeX; i++) {
                 this.squares.push([]);
             }
+
+            this.entities = [];
 
             // Create an empty squares world. These
             // squares can be replaced by custom squares
             // later
-            for (var i=0; i<this.sizeY; i++) {
-                for (var j=0; j<this.sizeX; j++) {
-                    this.createEmptySquare(new Wandrian.Position(j, i));
+            for (var i=0; i<this.sizeX; i++) {
+                for (var j=0; j<this.sizeY; j++) {
+                    this.createEmptySquare(new Wandrian.Position(i, j));
                 }
             }
 
@@ -360,14 +362,13 @@ W = Wandrian = {
             }
 
             // Add the square class to all square elements
-            for (var i=0; i<this.sizeY; i++) {
-                for (var j=0; j<this.sizeX; j++) {
-                    this.squares[j][i].el.addClass('square');
+            for (var i=0; i<this.sizeX; i++) {
+                for (var j=0; j<this.sizeY; j++) {
+                    this.squares[i][j].el.addClass('square');
                 }
             }
 
-            // Create the world grid and add all squares
-            // to it
+            // Create the world grid and add all squares to it
             for (var i=0; i<this.sizeY; i++) {
                 var row = $('<div>').addClass('square-row');
 
@@ -521,9 +522,9 @@ W = Wandrian = {
         }
 
         this.loopRedraw = function() {
-            for (var i=0; i<this.sizeY; i++) {
-                for (var j=0; j<this.sizeX; j++) {
-                    var square = this.squares[j][i];
+            for (var i=0; i<this.sizeX; i++) {
+                for (var j=0; j<this.sizeY; j++) {
+                    var square = this.squares[i][j];
 
                     if (!square.dirty) { continue; }
 
