@@ -337,7 +337,7 @@ W = Wandrian = {
         this.removeEntity = function(entity) {
             for (var i=0; i<this.squares.length; i++) {
                 if (this.squares[i].entity == entity) {
-                    // Remove css
+                    // Remove from DOM
                     entity.el.remove();
 
                     // Remove object
