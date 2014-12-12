@@ -24,6 +24,19 @@ SOFTWARE.
 
 
 W = Wandrian = {
+    Position: function(x, y) {
+        this.x = x;
+        this.y = y;
+
+        this.in = function(position) {
+            if (this.x == position.x && this.y == position.y) {
+                return true;
+            }
+
+            return false;
+        };
+    },
+
     // An entity is an object that lives in the World and does stuff
     Entity: function(world) {
         // Unique id
@@ -117,13 +130,7 @@ W = Wandrian = {
                 return false;
             }
 
-            if (this.position.x === position.x &&
-                this.position.y === position.y) {
-
-                return true;
-            }
-
-            return false;
+            return this.position.in(position);
         }
     },
 
@@ -269,12 +276,17 @@ W = Wandrian = {
                 return null;
             }
 
-            for (var i=0; i<this.squares.length; i++) {
+            var length = this.squares.length;
+            var i = 0;
+
+            while(i < length) {
                 var curPos = this.squares[i].position;
 
-                if (curPos.x == position.x && curPos.y == position.y) {
+                if (curPos.in(position)) {
                     return this.squares[i];
                 }
+
+                i++;
             }
 
             return null;
@@ -284,8 +296,7 @@ W = Wandrian = {
             for (var i=0; i<this.squares.length; i++) {
                 var curPos = this.squares[i].position;
 
-                if (curPos.x == square.position.x &&
-                    curPos.y == square.position.y) {
+                if (curPos.in(square.position)) {
                     this.squares[i] = square;
                     return true;
                 }
@@ -300,7 +311,7 @@ W = Wandrian = {
             var entity = new window[e.type](this);
             entity.id = this.entityIdCounter;
 
-            var square = this.getSquare(e);
+            var square = this.getSquare(new Wandrian.Position(e.x, e.y));
 
             if (!square) {
                 return null;
@@ -351,9 +362,7 @@ W = Wandrian = {
             // later
             for (var i=0; i<this.sizeY; i++) {
                 for (var j=0; j<this.sizeX; j++) {
-                    this.createEmptySquare({
-                        x: j, y: i
-                    });
+                    this.createEmptySquare(new Wandrian.Position(j, i));
                 }
             }
 
@@ -361,7 +370,9 @@ W = Wandrian = {
             for (var i=0; i<customSquares.length; i++) {
                 var cs = customSquares[i];
 
-                this.setSquare(new window[cs.type](cs, this));
+                this.setSquare(
+                    new window[cs.type](new Wandrian.Position(cs.x, cs.y), this)
+                );
             }
 
             // Add the square class to all square elements
@@ -375,9 +386,7 @@ W = Wandrian = {
                 var row = $('<div>').addClass('square-row');
 
                 for (var j=0; j<this.sizeX; j++) {
-                    var sq = this.getSquare({
-                        x: j, y: i
-                    });
+                    var sq = this.getSquare(new Wandrian.Position(j, i));
                     row.append(sq.el);
                 }
 
@@ -692,8 +701,8 @@ W = Wandrian = {
             params.blocking = false;
         }
 
-        return function(x, y, world) {
-            Wandrian.Square.call(this, x, y, world);
+        return function(position, world) {
+            Wandrian.Square.call(this, position, world);
 
             this.el = $('<div>').addClass(params.name);
 

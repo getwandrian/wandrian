@@ -24,10 +24,10 @@ var Monster = W.build({
 
         var currentPosition = this.getPosition();
 
-        var newPosition = {
-            x: currentPosition.x + diffX,
-            y: currentPosition.y + diffY
-        }
+        var newPosition = new W.Position(
+            currentPosition.x + diffX,
+            currentPosition.y + diffY
+        );
 
         if (newPosition.x < 0) {
             newPosition.x = 0;
@@ -60,10 +60,10 @@ Hero = W.build({
     possiblePosition: null,
 
     moveToDirection: function(direction) {
-        var newPossiblePosition = {
-            x: this.possiblePosition.x,
-            y: this.possiblePosition.y
-        };
+        var newPossiblePosition = new W.Position(
+            this.possiblePosition.x,
+            this.possiblePosition.y
+        );
 
         switch(direction) {
             case 'left':
@@ -111,7 +111,7 @@ var Rock = W.build({
     name: 'rock',
 
     blocking: true,
-    
+
     triedEntering: function(entity) {
         game.addToConsole("You can't climb this rock");
     }
@@ -189,10 +189,10 @@ var SimpleCollisionsGame = W.build({
         var solvedCollisions = [];
 
         for (var i=0; i<entities.length; i++) {
-            var newPosition = {
-                x: position.x + Math.floor(Math.random() * 3) - 1,
-                y: position.y + Math.floor(Math.random() * 3) - 1
-            };
+            var newPosition = new W.Position(
+                position.x + Math.floor(Math.random() * 3) - 1,
+                position.y + Math.floor(Math.random() * 3) - 1
+            );
 
             // Check if the new position is inside the map
             if (!this.isInside(newPosition)) {

@@ -24,6 +24,13 @@ var Snake = W.build({
     extends: SnakeSegment,
     name: 'snake',
 
+    disallowedPairs: [
+        ['left', 'right'],
+        ['right', 'left'],
+        ['up', 'down'],
+        ['down', 'up'],
+    ],
+
     init: function() {
         this.directionArray = [];
         this.lastSegment = this;
@@ -38,17 +45,10 @@ var Snake = W.build({
 
         var isAllowed = false;
 
-        var disallowedPairs = [
-            ['left', 'right'],
-            ['right', 'left'],
-            ['up', 'down'],
-            ['down', 'up'],
-        ];
-
         // Allow changing only non-opposite directions
-        for (var i=0; i<disallowedPairs.length; i++) {
-            if (currentDirection === disallowedPairs[i][0] &&
-                direction !== disallowedPairs[i][1]) {
+        for (var i=0; i<this.disallowedPairs.length; i++) {
+            if (currentDirection === this.disallowedPairs[i][0] &&
+                direction !== this.disallowedPairs[i][1]) {
 
                 isAllowed = true;
                 break;
@@ -63,10 +63,10 @@ var Snake = W.build({
     updatePosition: function() {
         var currentPosition = this.getPosition();
 
-        var newPossiblePosition = {
-            x: currentPosition.x,
-            y: currentPosition.y
-        };
+        var newPossiblePosition = new W.Position(
+            currentPosition.x,
+            currentPosition.y
+        );
 
         var direction;
 
@@ -194,10 +194,10 @@ var SnakeGame = W.build({
             var newFood
 
             do {
-                var foodPosition = {
-                    x: Math.floor(Math.random() * this.world.sizeX),
-                    y: Math.floor(Math.random() * this.world.sizeY),
-                };
+                var foodPosition = new W.Position(
+                    Math.floor(Math.random() * this.world.sizeX),
+                    Math.floor(Math.random() * this.world.sizeY)
+                );
 
                 // Try creating the new food. If it is on an illegal position,
                 // null will be returned. In this case, try again. For example,
