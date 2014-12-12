@@ -38,6 +38,10 @@ W = Wandrian = {
         // Store the last position. It is useful in many games
         this.lastPosition;
 
+        // Square where this entity lives. Do not change directly.
+        // Use square.setEntity to update all references accordingly
+        this.square;
+
         // Function that makes the entity "do something". Each entity should
         // implement its own loop
         this.loop = function() {};
@@ -75,11 +79,11 @@ W = Wandrian = {
             // is different from the old one, move it
             if (newSquare && newSquare != currentSquare) {
                 // Add entity to the new square
-                newSquare.entity = this;
+                newSquare.setEntity(this);
 
                 // Remove entity from the current square
                 if (currentSquare) {
-                    currentSquare.entity = null;
+                    currentSquare.setEntity(null);
 
                     // Mark as dirty, so it is redrawn later
                     currentSquare.dirty = true;
@@ -135,7 +139,8 @@ W = Wandrian = {
         // HTML element
         this.el;
 
-        // An Entity can belong to a Square
+        // An Entity can belong to a Square. Do not change directly.
+        // Use square.setEntity to update all references accordingly
         this.entity;
 
         // Entities cannot pass over blocking squares
@@ -152,6 +157,14 @@ W = Wandrian = {
         // an Entity unsuccessfully tries entering a blocking
         // square
         this.triedEntering; // = function(entity) {};
+
+        this.setEntity = function(entity) {
+            this.entity = entity;
+
+            if (entity != null) {
+                this.entity.square = this;
+            }
+        };
     },
 
 
@@ -169,6 +182,10 @@ W = Wandrian = {
         this.entityIdCounter = 0;
 
         this.squares = [];
+
+        // This array is redundant (because entities are essentially inside
+        // squares), but is a good performance helper
+        this.entities = [];
 
         this.player;
 
@@ -211,9 +228,11 @@ W = Wandrian = {
         /*********************************************************************/
 
         this.getEntitySquare = function(entity) {
-            for (var i=0; i<this.squares.length; i++) {
-                if (this.squares[i].entity == entity) {
-                    return this.squares[i];
+            // It is better to loop entities because there are always less
+            // entities than squares
+            for (var i=0; i<this.entities.length; i++) {
+                if (this.entities[i] == entity) {
+                    return this.entities[i].square;
                 }
             }
 
@@ -221,9 +240,11 @@ W = Wandrian = {
         };
 
         this.getEntityPosition = function(entity) {
-            for (var i=0; i<this.squares.length; i++) {
-                if (this.squares[i].entity == entity) {
-                    return this.squares[i].position;
+            // It is better to loop entities because there are always less
+            // entities than squares
+            for (var i=0; i<this.entities.length; i++) {
+                if (this.entities[i] == entity) {
+                    return this.entities[i].square.position;
                 }
             }
 
@@ -231,16 +252,7 @@ W = Wandrian = {
         };
 
         this.getAllEntities = function() {
-            var entities = [];
-
-            for (var i=0; i<this.squares.length; i++) {
-                var entity = this.squares[i].entity;
-                if (entity) {
-                    entities.push(entity);
-                }
-            }
-
-            return entities;
+            return this.entities;
         };
 
         /*********************************************************************/
@@ -299,12 +311,14 @@ W = Wandrian = {
                 return null;
             }
 
-            square.entity = entity;
+            square.setEntity(entity);
             square.dirty = true;
 
             entity.el.addClass('entity');
 
             this.entityIdCounter++;
+
+            this.entities.push(entity);
 
             return entity;
         };
@@ -316,7 +330,9 @@ W = Wandrian = {
                     entity.el.remove();
 
                     // Remove object
-                    this.squares[i].entity = null;
+                    this.squares[i].setEntity(null);
+
+                    this.entities = _.without(this.entities, entity);
 
                     return true;
                 }
@@ -327,7 +343,7 @@ W = Wandrian = {
 
         this.genesis = function(customSquares, entities, player) {
             // Clean everything (in case of a restart)
-            this.el.html('');
+            this.el.empty();
             this.squares = [];
 
             // Create an empty squares world. These
@@ -384,45 +400,42 @@ W = Wandrian = {
         this.loopEntities = function() {
             var entitiesInPositions = [];
 
-            for (var i=0; i<this.squares.length; i++) {
-                var square = this.squares[i];
-
-                if (!square.entity) {
-                    continue;
-                }
+            for (var i=0; i<this.entities.length; i++) {
+                var entity = this.entities[i];
+                var currentPosition = entity.getPosition();
 
                 // Entity does action and returns a possible new position
-                var position = square.entity.loop();
+                var newPosition = entity.loop();
 
-                if (!position) {
-                    console.error(square.entity, "didn't return a valid position. Check this entities' loop function!");
+                if (!newPosition) {
+                    console.error(entity, "didn't return a valid position. Check this entities' loop function!");
                 }
 
-                var newSquare = this.getSquare(position);
+                var newSquare = this.getSquare(newPosition);
 
                 var curEcc = _.find(entitiesInPositions, function(item) {
-                    return item.in(square.position);
+                    return item.in(currentPosition);
                 });
 
                 var newEcc = _.find(entitiesInPositions, function(item) {
-                    return item.in(position);
+                    return item.in(newPosition);
                 });
 
                 if (newSquare && newSquare.blocking) {
                     newEcc = curEcc;
-                    position = square.position;
-                    newSquare.triedEntering(square.entity);
+                    newPosition = currentPosition;
+                    newSquare.triedEntering(entity);
                 }
 
                 if (!newEcc) {
                     newEcc = new Wandrian.EntityCollisionCollection(
-                        position
+                        newPosition
                     );
 
                     entitiesInPositions.push(newEcc);
                 }
 
-                newEcc.entities.push(square.entity);
+                newEcc.entities.push(entity);
             }
 
             return entitiesInPositions;
@@ -461,7 +474,7 @@ W = Wandrian = {
                             );
 
                         // Clear entity list. If there are still entities in
-                        // this position, they will be re-added in the merge 
+                        // this position, they will be re-added in the merge
                         // function below (mergePositions)
                         ecc.entities = [];
 
@@ -516,26 +529,28 @@ W = Wandrian = {
             for (var i=0; i<this.squares.length; i++) {
                 var square = this.squares[i];
 
-                if (square.dirty) {
-                    if (square.entity) {
-                        square.el.html(square.entity.el);
-                    }
-                    else {
-                        square.el.html('');
-                    }
+                if (!square.dirty) { continue; }
 
-                    square.dirty = false;
+                // I have used innerHTML because the performance difference
+                // (than using "html" and "empty") is valid here
+                if (square.entity) {
+                    square.el[0].innerHTML = square.entity.el[0].outerHTML;
                 }
+                else {
+                    square.el[0].innerHTML = '';
+                }
+
+                square.dirty = false;
             }
         };
 
         this.loop = function() {
-            // console.time('loop');
+            console.time('loop');
             var entitiesInPositions = this.loopEntities();
             entitiesInPositions = this.loopHandleCollisions(entitiesInPositions);
             this.loopMoveEveryone(entitiesInPositions);
             this.loopRedraw();
-            // console.timeEnd('loop');
+            console.timeEnd('loop');
         };
     },
 
