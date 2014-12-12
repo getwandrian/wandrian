@@ -188,7 +188,7 @@ W = Wandrian = {
 
         this.entityIdCounter = 0;
 
-        this.squares = [];
+        this.squares;
 
         // This array is redundant (because entities are essentially inside
         // squares), but is a good performance helper
@@ -267,7 +267,7 @@ W = Wandrian = {
         this.createEmptySquare = function(position) {
             var square = new Wandrian.Square(position, this);
             square.el = $('<div>');
-            this.squares.push(square);
+            this.squares[position.x][position.y] = square;
             return square;
         };
 
@@ -276,33 +276,11 @@ W = Wandrian = {
                 return null;
             }
 
-            var length = this.squares.length;
-            var i = 0;
-
-            while(i < length) {
-                var curPos = this.squares[i].position;
-
-                if (curPos.in(position)) {
-                    return this.squares[i];
-                }
-
-                i++;
-            }
-
-            return null;
+            return this.squares[position.x][position.y];
         };
 
         this.setSquare = function(square) {
-            for (var i=0; i<this.squares.length; i++) {
-                var curPos = this.squares[i].position;
-
-                if (curPos.in(square.position)) {
-                    this.squares[i] = square;
-                    return true;
-                }
-            }
-
-            return false;
+            this.squares[square.position.x][square.position.y] = square;
         };
 
         /*********************************************************************/
@@ -335,17 +313,19 @@ W = Wandrian = {
         };
 
         this.removeEntity = function(entity) {
-            for (var i=0; i<this.squares.length; i++) {
-                if (this.squares[i].entity == entity) {
-                    // Remove from DOM
-                    entity.el.remove();
+            for (var i=0; i<this.sizeY; i++) {
+                for (var j=0; j<this.sizeX; j++) {
+                    if (this.squares[j][i].entity == entity) {
+                        // Remove from DOM
+                        entity.el.remove();
 
-                    // Remove object
-                    this.squares[i].setEntity(null);
+                        // Remove object
+                        this.squares[j][i].setEntity(null);
 
-                    this.entities = _.without(this.entities, entity);
+                        this.entities = _.without(this.entities, entity);
 
-                    return true;
+                        return true;
+                    }
                 }
             }
 
@@ -355,7 +335,11 @@ W = Wandrian = {
         this.genesis = function(customSquares, entities, player) {
             // Clean everything (in case of a restart)
             this.el.empty();
+
             this.squares = [];
+            for (var i=0; i<this.sizeY; i++) {
+                this.squares.push([]);
+            }
 
             // Create an empty squares world. These
             // squares can be replaced by custom squares
@@ -376,8 +360,10 @@ W = Wandrian = {
             }
 
             // Add the square class to all square elements
-            for (var i=0; i<this.squares.length; i++) {
-                this.squares[i].el.addClass('square');
+            for (var i=0; i<this.sizeY; i++) {
+                for (var j=0; j<this.sizeX; j++) {
+                    this.squares[j][i].el.addClass('square');
+                }
             }
 
             // Create the world grid and add all squares
@@ -535,21 +521,23 @@ W = Wandrian = {
         }
 
         this.loopRedraw = function() {
-            for (var i=0; i<this.squares.length; i++) {
-                var square = this.squares[i];
+            for (var i=0; i<this.sizeY; i++) {
+                for (var j=0; j<this.sizeX; j++) {
+                    var square = this.squares[j][i];
 
-                if (!square.dirty) { continue; }
+                    if (!square.dirty) { continue; }
 
-                // I have used innerHTML because the performance difference
-                // (than using "html" and "empty") is valid here
-                if (square.entity) {
-                    square.el[0].innerHTML = square.entity.el[0].outerHTML;
+                    // I have used innerHTML because the performance difference
+                    // (than using "html" and "empty") is valid here
+                    if (square.entity) {
+                        square.el[0].innerHTML = square.entity.el[0].outerHTML;
+                    }
+                    else {
+                        square.el[0].innerHTML = '';
+                    }
+
+                    square.dirty = false;
                 }
-                else {
-                    square.el[0].innerHTML = '';
-                }
-
-                square.dirty = false;
             }
         };
 
