@@ -155,9 +155,9 @@
         { "x": 1, "y": 16, "type": "Monster"  }
     ],
     "player": { "x": 14, "y": 14, "type": "Hero" },
-    
-    "worldWidth": 50,
-    "worldHeight": 50,
+
+    "worldWidth": 160,
+    "worldHeight": 160,
     "worldSelector": ".world",
 
     "loopPeriod": 50
