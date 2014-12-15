@@ -1,13 +1,3 @@
-var Food = W.build({
-    type: W.Types.Entity,
-    name: 'food',
-
-    loop: function() {
-        // Stay there and do nothing
-        return this.getPosition();
-    }
-});
-
 
 var Monster = W.build({
     type: W.Types.Entity,
