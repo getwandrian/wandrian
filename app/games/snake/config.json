@@ -6,9 +6,9 @@
 
     "player": { "x": 15, "y": 15, "type": "Snake" },
 
-    "worldWidth": 300,
-    "worldHeight": 150,
+    "worldWidth": 30,
+    "worldHeight": 30,
     "worldSelector": ".world",
 
-    "loopPeriod": 50
+    "loopPeriod": 100
 }

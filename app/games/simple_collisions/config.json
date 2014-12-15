@@ -133,8 +133,15 @@
         { "x": 29, "y": 42, "type": "Rock" },
         { "x": 30, "y": 42, "type": "Rock" },
         { "x": 31, "y": 42, "type": "Rock" },
-        { "x": 32, "y": 42, "type": "Rock" }
+        { "x": 32, "y": 42, "type": "Rock" },
 
+        { "x": 0, "y": 0, "type": "Grass" },
+        { "x": 0, "y": 1, "type": "Grass" },
+        { "x": 1, "y": 0, "type": "Grass" },
+        { "x": 1, "y": 1, "type": "Grass" },
+        { "x": 1, "y": 2, "type": "Grass" },
+        { "x": 2, "y": 1, "type": "Grass" },
+        { "x": 2, "y": 2, "type": "Grass" }
     ],
     "entities": [
         { "x": 1, "y": 1, "type": "Monster" },

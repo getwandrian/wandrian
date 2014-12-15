@@ -57,7 +57,10 @@ W = Wandrian = {
 
         // Function that makes the entity "do something". Each entity should
         // implement its own loop
-        this.loop = function() {};
+        this.loop = function() {
+            // Default loop: stay in its own position and do nothing
+            return this.getPosition()
+        };
 
         this.getPosition = function() {
             return this.world.getEntityPosition(this);

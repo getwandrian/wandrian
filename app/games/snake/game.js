@@ -1,11 +1,6 @@
 var Food = W.build({
     type: W.Types.Entity,
     name: 'food',
-
-    loop: function() {
-        // Stay there and do nothing
-        return this.getPosition()
-    }
 });
 
 var SnakeSegment = W.build({
