@@ -1,14 +1,23 @@
 {
-    "squares": [],
-    "entities": [
-        { "x": 10, "y": 10, "type": "Food" }
-    ],
-
-    "player": { "x": 15, "y": 15, "type": "Snake" },
-
-    "worldWidth": 30,
-    "worldHeight": 30,
-    "worldSelector": ".world",
-
-    "loopPeriod": 100
+  "squares": [],
+  "entities": [
+    {
+      "position": {
+        "x": 10,
+        "y": 10
+      },
+      "type": "Food"
+    }
+  ],
+  "player": {
+    "position": {
+      "x": 15,
+      "y": 15
+    },
+    "type": "Snake"
+  },
+  "worldWidth": 30,
+  "worldHeight": 30,
+  "worldSelector": ".world",
+  "loopPeriod": 100
 }

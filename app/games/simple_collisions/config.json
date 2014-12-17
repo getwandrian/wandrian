@@ -1,171 +1,1088 @@
 {
-    "squares": [
-        { "x": 15, "y": 6, "type": "Rock" },
-        { "x": 15, "y": 7, "type": "Rock" },
-        { "x": 15, "y": 8, "type": "Rock" },
-        { "x": 15, "y": 9, "type": "Rock" },
-        { "x": 15, "y": 10, "type": "Rock" },
-        { "x": 15, "y": 11, "type": "Rock" },
-        { "x": 15, "y": 12, "type": "Rock" },
-        { "x": 15, "y": 13, "type": "Rock" },
-        { "x": 15, "y": 14, "type": "Rock" },
-        { "x": 15, "y": 15, "type": "Rock" },
-        { "x": 15, "y": 16, "type": "Rock" },
-        { "x": 15, "y": 17, "type": "Rock" },
-        { "x": 15, "y": 17, "type": "Rock" },
-        { "x": 15, "y": 18, "type": "Rock" },
-        { "x": 15, "y": 19, "type": "Rock" },
-        { "x": 15, "y": 20, "type": "Rock" },
-        { "x": 15, "y": 21, "type": "Rock" },
-        { "x": 15, "y": 22, "type": "Rock" },
-        { "x": 15, "y": 23, "type": "Rock" },
-        { "x": 15, "y": 24, "type": "Rock" },
-        { "x": 15, "y": 25, "type": "Rock" },
-        { "x": 15, "y": 26, "type": "Rock" },
-        { "x": 15, "y": 27, "type": "Rock" },
-        { "x": 15, "y": 28, "type": "Rock" },
-        { "x": 15, "y": 29, "type": "Rock" },
-        { "x": 15, "y": 30, "type": "Rock" },
-        { "x": 15, "y": 31, "type": "Rock" },
-        { "x": 15, "y": 32, "type": "Rock" },
-        { "x": 15, "y": 33, "type": "Rock" },
-        { "x": 15, "y": 34, "type": "Rock" },
-        { "x": 15, "y": 35, "type": "Rock" },
-        { "x": 15, "y": 36, "type": "Rock" },
-        { "x": 15, "y": 37, "type": "Rock" },
-        { "x": 15, "y": 38, "type": "Rock" },
-        { "x": 15, "y": 39, "type": "Rock" },
-        { "x": 15, "y": 40, "type": "Rock" },
-        { "x": 15, "y": 41, "type": "Rock" },
-        { "x": 15, "y": 42, "type": "Rock" },
-
-        { "x": 24, "y": 6, "type": "Rock" },
-        { "x": 24, "y": 7, "type": "Rock" },
-        { "x": 24, "y": 8, "type": "Rock" },
-        { "x": 24, "y": 9, "type": "Rock" },
-        { "x": 24, "y": 10, "type": "Rock" },
-        { "x": 24, "y": 11, "type": "Rock" },
-        { "x": 24, "y": 12, "type": "Rock" },
-        { "x": 24, "y": 13, "type": "Rock" },
-        { "x": 24, "y": 14, "type": "Rock" },
-        { "x": 24, "y": 15, "type": "Rock" },
-        { "x": 24, "y": 16, "type": "Rock" },
-        { "x": 24, "y": 17, "type": "Rock" },
-        { "x": 24, "y": 17, "type": "Rock" },
-        { "x": 24, "y": 18, "type": "Rock" },
-        { "x": 24, "y": 19, "type": "Rock" },
-        { "x": 24, "y": 20, "type": "Rock" },
-        { "x": 24, "y": 21, "type": "Rock" },
-        { "x": 24, "y": 22, "type": "Rock" },
-        { "x": 24, "y": 23, "type": "Rock" },
-        { "x": 24, "y": 24, "type": "Rock" },
-        { "x": 24, "y": 25, "type": "Rock" },
-        { "x": 24, "y": 26, "type": "Rock" },
-        { "x": 24, "y": 27, "type": "Rock" },
-        { "x": 24, "y": 28, "type": "Rock" },
-        { "x": 24, "y": 29, "type": "Rock" },
-        { "x": 24, "y": 30, "type": "Rock" },
-        { "x": 24, "y": 31, "type": "Rock" },
-        { "x": 24, "y": 32, "type": "Rock" },
-        { "x": 24, "y": 33, "type": "Rock" },
-        { "x": 24, "y": 34, "type": "Rock" },
-        { "x": 24, "y": 35, "type": "Rock" },
-        { "x": 24, "y": 36, "type": "Rock" },
-        { "x": 24, "y": 37, "type": "Rock" },
-        { "x": 24, "y": 38, "type": "Rock" },
-        { "x": 24, "y": 39, "type": "Rock" },
-        { "x": 24, "y": 40, "type": "Rock" },
-        { "x": 24, "y": 41, "type": "Rock" },
-        { "x": 24, "y": 42, "type": "Rock" },
-
-        { "x": 33, "y": 6, "type": "Rock" },
-        { "x": 33, "y": 7, "type": "Rock" },
-        { "x": 33, "y": 8, "type": "Rock" },
-        { "x": 33, "y": 9, "type": "Rock" },
-        { "x": 33, "y": 10, "type": "Rock" },
-        { "x": 33, "y": 11, "type": "Rock" },
-        { "x": 33, "y": 12, "type": "Rock" },
-        { "x": 33, "y": 13, "type": "Rock" },
-        { "x": 33, "y": 14, "type": "Rock" },
-        { "x": 33, "y": 15, "type": "Rock" },
-        { "x": 33, "y": 16, "type": "Rock" },
-        { "x": 33, "y": 17, "type": "Rock" },
-        { "x": 33, "y": 17, "type": "Rock" },
-        { "x": 33, "y": 18, "type": "Rock" },
-        { "x": 33, "y": 19, "type": "Rock" },
-        { "x": 33, "y": 20, "type": "Rock" },
-        { "x": 33, "y": 21, "type": "Rock" },
-        { "x": 33, "y": 22, "type": "Rock" },
-        { "x": 33, "y": 23, "type": "Rock" },
-        { "x": 33, "y": 24, "type": "Rock" },
-        { "x": 33, "y": 25, "type": "Rock" },
-        { "x": 33, "y": 26, "type": "Rock" },
-        { "x": 33, "y": 27, "type": "Rock" },
-        { "x": 33, "y": 28, "type": "Rock" },
-        { "x": 33, "y": 29, "type": "Rock" },
-        { "x": 33, "y": 30, "type": "Rock" },
-        { "x": 33, "y": 31, "type": "Rock" },
-        { "x": 33, "y": 32, "type": "Rock" },
-        { "x": 33, "y": 33, "type": "Rock" },
-        { "x": 33, "y": 34, "type": "Rock" },
-        { "x": 33, "y": 35, "type": "Rock" },
-        { "x": 33, "y": 36, "type": "Rock" },
-        { "x": 33, "y": 37, "type": "Rock" },
-        { "x": 33, "y": 38, "type": "Rock" },
-        { "x": 33, "y": 39, "type": "Rock" },
-        { "x": 33, "y": 40, "type": "Rock" },
-        { "x": 33, "y": 41, "type": "Rock" },
-        { "x": 33, "y": 42, "type": "Rock" },
-
-        { "x": 16, "y": 6, "type": "Rock" },
-        { "x": 17, "y": 6, "type": "Rock" },
-        { "x": 18, "y": 6, "type": "Rock" },
-        { "x": 19, "y": 6, "type": "Rock" },
-        { "x": 20, "y": 6, "type": "Rock" },
-        { "x": 21, "y": 6, "type": "Rock" },
-        { "x": 22, "y": 6, "type": "Rock" },
-        { "x": 23, "y": 6, "type": "Rock" },
-
-        { "x": 25, "y": 42, "type": "Rock" },
-        { "x": 26, "y": 42, "type": "Rock" },
-        { "x": 27, "y": 42, "type": "Rock" },
-        { "x": 28, "y": 42, "type": "Rock" },
-        { "x": 29, "y": 42, "type": "Rock" },
-        { "x": 30, "y": 42, "type": "Rock" },
-        { "x": 31, "y": 42, "type": "Rock" },
-        { "x": 32, "y": 42, "type": "Rock" },
-
-        { "x": 0, "y": 0, "type": "Grass" },
-        { "x": 0, "y": 1, "type": "Grass" },
-        { "x": 1, "y": 0, "type": "Grass" },
-        { "x": 1, "y": 1, "type": "Grass" },
-        { "x": 1, "y": 2, "type": "Grass" },
-        { "x": 2, "y": 1, "type": "Grass" },
-        { "x": 2, "y": 2, "type": "Grass" }
-    ],
-    "entities": [
-        { "x": 1, "y": 1, "type": "Monster" },
-        { "x": 1, "y": 2, "type": "Monster" },
-        { "x": 1, "y": 3, "type": "Monster" },
-        { "x": 1, "y": 4, "type": "Monster" },
-        { "x": 1, "y": 5, "type": "Monster" },
-        { "x": 1, "y": 6, "type": "Monster" },
-        { "x": 1, "y": 7, "type": "Monster" },
-        { "x": 1, "y": 8, "type": "Monster" },
-        { "x": 1, "y": 9, "type": "Monster" },
-        { "x": 1, "y": 10, "type": "Monster" },
-        { "x": 1, "y": 11, "type": "Monster" },
-        { "x": 1, "y": 12, "type": "Monster" },
-        { "x": 1, "y": 13, "type": "Monster" },
-        { "x": 1, "y": 14, "type": "Monster" },
-        { "x": 1, "y": 15, "type": "Monster" },
-        { "x": 1, "y": 16, "type": "Monster"  }
-    ],
-    "player": { "x": 14, "y": 14, "type": "Hero" },
-
-    "worldWidth": 160,
-    "worldHeight": 160,
-    "worldSelector": ".world",
-
-    "loopPeriod": 50
+  "squares": [
+    {
+      "position": {
+        "x": 15,
+        "y": 6
+      },
+      "type": "Rock"
+    },
+    {
+      "position": {
+        "x": 15,
+        "y": 7
+      },
+      "type": "Rock"
+    },
+    {
+      "position": {
+        "x": 15,
+        "y": 8
+      },
+      "type": "Rock"
+    },
+    {
+      "position": {
+        "x": 15,
+        "y": 9
+      },
+      "type": "Rock"
+    },
+    {
+      "position": {
+        "x": 15,
+        "y": 10
+      },
+      "type": "Rock"
+    },
+    {
+      "position": {
+        "x": 15,
+        "y": 11
+      },
+      "type": "Rock"
+    },
+    {
+      "position": {
+        "x": 15,
+        "y": 12
+      },
+      "type": "Rock"
+    },
+    {
+      "position": {
+        "x": 15,
+        "y": 13
+      },
+      "type": "Rock"
+    },
+    {
+      "position": {
+        "x": 15,
+        "y": 14
+      },
+      "type": "Rock"
+    },
+    {
+      "position": {
+        "x": 15,
+        "y": 15
+      },
+      "type": "Rock"
+    },
+    {
+      "position": {
+        "x": 15,
+        "y": 16
+      },
+      "type": "Rock"
+    },
+    {
+      "position": {
+        "x": 15,
+        "y": 17
+      },
+      "type": "Rock"
+    },
+    {
+      "position": {
+        "x": 15,
+        "y": 17
+      },
+      "type": "Rock"
+    },
+    {
+      "position": {
+        "x": 15,
+        "y": 18
+      },
+      "type": "Rock"
+    },
+    {
+      "position": {
+        "x": 15,
+        "y": 19
+      },
+      "type": "Rock"
+    },
+    {
+      "position": {
+        "x": 15,
+        "y": 20
+      },
+      "type": "Rock"
+    },
+    {
+      "position": {
+        "x": 15,
+        "y": 21
+      },
+      "type": "Rock"
+    },
+    {
+      "position": {
+        "x": 15,
+        "y": 22
+      },
+      "type": "Rock"
+    },
+    {
+      "position": {
+        "x": 15,
+        "y": 23
+      },
+      "type": "Rock"
+    },
+    {
+      "position": {
+        "x": 15,
+        "y": 24
+      },
+      "type": "Rock"
+    },
+    {
+      "position": {
+        "x": 15,
+        "y": 25
+      },
+      "type": "Rock"
+    },
+    {
+      "position": {
+        "x": 15,
+        "y": 26
+      },
+      "type": "Rock"
+    },
+    {
+      "position": {
+        "x": 15,
+        "y": 27
+      },
+      "type": "Rock"
+    },
+    {
+      "position": {
+        "x": 15,
+        "y": 28
+      },
+      "type": "Rock"
+    },
+    {
+      "position": {
+        "x": 15,
+        "y": 29
+      },
+      "type": "Rock"
+    },
+    {
+      "position": {
+        "x": 15,
+        "y": 30
+      },
+      "type": "Rock"
+    },
+    {
+      "position": {
+        "x": 15,
+        "y": 31
+      },
+      "type": "Rock"
+    },
+    {
+      "position": {
+        "x": 15,
+        "y": 32
+      },
+      "type": "Rock"
+    },
+    {
+      "position": {
+        "x": 15,
+        "y": 33
+      },
+      "type": "Rock"
+    },
+    {
+      "position": {
+        "x": 15,
+        "y": 34
+      },
+      "type": "Rock"
+    },
+    {
+      "position": {
+        "x": 15,
+        "y": 35
+      },
+      "type": "Rock"
+    },
+    {
+      "position": {
+        "x": 15,
+        "y": 36
+      },
+      "type": "Rock"
+    },
+    {
+      "position": {
+        "x": 15,
+        "y": 37
+      },
+      "type": "Rock"
+    },
+    {
+      "position": {
+        "x": 15,
+        "y": 38
+      },
+      "type": "Rock"
+    },
+    {
+      "position": {
+        "x": 15,
+        "y": 39
+      },
+      "type": "Rock"
+    },
+    {
+      "position": {
+        "x": 15,
+        "y": 40
+      },
+      "type": "Rock"
+    },
+    {
+      "position": {
+        "x": 15,
+        "y": 41
+      },
+      "type": "Rock"
+    },
+    {
+      "position": {
+        "x": 15,
+        "y": 42
+      },
+      "type": "Rock"
+    },
+    {
+      "position": {
+        "x": 24,
+        "y": 6
+      },
+      "type": "Rock"
+    },
+    {
+      "position": {
+        "x": 24,
+        "y": 7
+      },
+      "type": "Rock"
+    },
+    {
+      "position": {
+        "x": 24,
+        "y": 8
+      },
+      "type": "Rock"
+    },
+    {
+      "position": {
+        "x": 24,
+        "y": 9
+      },
+      "type": "Rock"
+    },
+    {
+      "position": {
+        "x": 24,
+        "y": 10
+      },
+      "type": "Rock"
+    },
+    {
+      "position": {
+        "x": 24,
+        "y": 11
+      },
+      "type": "Rock"
+    },
+    {
+      "position": {
+        "x": 24,
+        "y": 12
+      },
+      "type": "Rock"
+    },
+    {
+      "position": {
+        "x": 24,
+        "y": 13
+      },
+      "type": "Rock"
+    },
+    {
+      "position": {
+        "x": 24,
+        "y": 14
+      },
+      "type": "Rock"
+    },
+    {
+      "position": {
+        "x": 24,
+        "y": 15
+      },
+      "type": "Rock"
+    },
+    {
+      "position": {
+        "x": 24,
+        "y": 16
+      },
+      "type": "Rock"
+    },
+    {
+      "position": {
+        "x": 24,
+        "y": 17
+      },
+      "type": "Rock"
+    },
+    {
+      "position": {
+        "x": 24,
+        "y": 17
+      },
+      "type": "Rock"
+    },
+    {
+      "position": {
+        "x": 24,
+        "y": 18
+      },
+      "type": "Rock"
+    },
+    {
+      "position": {
+        "x": 24,
+        "y": 19
+      },
+      "type": "Rock"
+    },
+    {
+      "position": {
+        "x": 24,
+        "y": 20
+      },
+      "type": "Rock"
+    },
+    {
+      "position": {
+        "x": 24,
+        "y": 21
+      },
+      "type": "Rock"
+    },
+    {
+      "position": {
+        "x": 24,
+        "y": 22
+      },
+      "type": "Rock"
+    },
+    {
+      "position": {
+        "x": 24,
+        "y": 23
+      },
+      "type": "Rock"
+    },
+    {
+      "position": {
+        "x": 24,
+        "y": 24
+      },
+      "type": "Rock"
+    },
+    {
+      "position": {
+        "x": 24,
+        "y": 25
+      },
+      "type": "Rock"
+    },
+    {
+      "position": {
+        "x": 24,
+        "y": 26
+      },
+      "type": "Rock"
+    },
+    {
+      "position": {
+        "x": 24,
+        "y": 27
+      },
+      "type": "Rock"
+    },
+    {
+      "position": {
+        "x": 24,
+        "y": 28
+      },
+      "type": "Rock"
+    },
+    {
+      "position": {
+        "x": 24,
+        "y": 29
+      },
+      "type": "Rock"
+    },
+    {
+      "position": {
+        "x": 24,
+        "y": 30
+      },
+      "type": "Rock"
+    },
+    {
+      "position": {
+        "x": 24,
+        "y": 31
+      },
+      "type": "Rock"
+    },
+    {
+      "position": {
+        "x": 24,
+        "y": 32
+      },
+      "type": "Rock"
+    },
+    {
+      "position": {
+        "x": 24,
+        "y": 33
+      },
+      "type": "Rock"
+    },
+    {
+      "position": {
+        "x": 24,
+        "y": 34
+      },
+      "type": "Rock"
+    },
+    {
+      "position": {
+        "x": 24,
+        "y": 35
+      },
+      "type": "Rock"
+    },
+    {
+      "position": {
+        "x": 24,
+        "y": 36
+      },
+      "type": "Rock"
+    },
+    {
+      "position": {
+        "x": 24,
+        "y": 37
+      },
+      "type": "Rock"
+    },
+    {
+      "position": {
+        "x": 24,
+        "y": 38
+      },
+      "type": "Rock"
+    },
+    {
+      "position": {
+        "x": 24,
+        "y": 39
+      },
+      "type": "Rock"
+    },
+    {
+      "position": {
+        "x": 24,
+        "y": 40
+      },
+      "type": "Rock"
+    },
+    {
+      "position": {
+        "x": 24,
+        "y": 41
+      },
+      "type": "Rock"
+    },
+    {
+      "position": {
+        "x": 24,
+        "y": 42
+      },
+      "type": "Rock"
+    },
+    {
+      "position": {
+        "x": 33,
+        "y": 6
+      },
+      "type": "Rock"
+    },
+    {
+      "position": {
+        "x": 33,
+        "y": 7
+      },
+      "type": "Rock"
+    },
+    {
+      "position": {
+        "x": 33,
+        "y": 8
+      },
+      "type": "Rock"
+    },
+    {
+      "position": {
+        "x": 33,
+        "y": 9
+      },
+      "type": "Rock"
+    },
+    {
+      "position": {
+        "x": 33,
+        "y": 10
+      },
+      "type": "Rock"
+    },
+    {
+      "position": {
+        "x": 33,
+        "y": 11
+      },
+      "type": "Rock"
+    },
+    {
+      "position": {
+        "x": 33,
+        "y": 12
+      },
+      "type": "Rock"
+    },
+    {
+      "position": {
+        "x": 33,
+        "y": 13
+      },
+      "type": "Rock"
+    },
+    {
+      "position": {
+        "x": 33,
+        "y": 14
+      },
+      "type": "Rock"
+    },
+    {
+      "position": {
+        "x": 33,
+        "y": 15
+      },
+      "type": "Rock"
+    },
+    {
+      "position": {
+        "x": 33,
+        "y": 16
+      },
+      "type": "Rock"
+    },
+    {
+      "position": {
+        "x": 33,
+        "y": 17
+      },
+      "type": "Rock"
+    },
+    {
+      "position": {
+        "x": 33,
+        "y": 17
+      },
+      "type": "Rock"
+    },
+    {
+      "position": {
+        "x": 33,
+        "y": 18
+      },
+      "type": "Rock"
+    },
+    {
+      "position": {
+        "x": 33,
+        "y": 19
+      },
+      "type": "Rock"
+    },
+    {
+      "position": {
+        "x": 33,
+        "y": 20
+      },
+      "type": "Rock"
+    },
+    {
+      "position": {
+        "x": 33,
+        "y": 21
+      },
+      "type": "Rock"
+    },
+    {
+      "position": {
+        "x": 33,
+        "y": 22
+      },
+      "type": "Rock"
+    },
+    {
+      "position": {
+        "x": 33,
+        "y": 23
+      },
+      "type": "Rock"
+    },
+    {
+      "position": {
+        "x": 33,
+        "y": 24
+      },
+      "type": "Rock"
+    },
+    {
+      "position": {
+        "x": 33,
+        "y": 25
+      },
+      "type": "Rock"
+    },
+    {
+      "position": {
+        "x": 33,
+        "y": 26
+      },
+      "type": "Rock"
+    },
+    {
+      "position": {
+        "x": 33,
+        "y": 27
+      },
+      "type": "Rock"
+    },
+    {
+      "position": {
+        "x": 33,
+        "y": 28
+      },
+      "type": "Rock"
+    },
+    {
+      "position": {
+        "x": 33,
+        "y": 29
+      },
+      "type": "Rock"
+    },
+    {
+      "position": {
+        "x": 33,
+        "y": 30
+      },
+      "type": "Rock"
+    },
+    {
+      "position": {
+        "x": 33,
+        "y": 31
+      },
+      "type": "Rock"
+    },
+    {
+      "position": {
+        "x": 33,
+        "y": 32
+      },
+      "type": "Rock"
+    },
+    {
+      "position": {
+        "x": 33,
+        "y": 33
+      },
+      "type": "Rock"
+    },
+    {
+      "position": {
+        "x": 33,
+        "y": 34
+      },
+      "type": "Rock"
+    },
+    {
+      "position": {
+        "x": 33,
+        "y": 35
+      },
+      "type": "Rock"
+    },
+    {
+      "position": {
+        "x": 33,
+        "y": 36
+      },
+      "type": "Rock"
+    },
+    {
+      "position": {
+        "x": 33,
+        "y": 37
+      },
+      "type": "Rock"
+    },
+    {
+      "position": {
+        "x": 33,
+        "y": 38
+      },
+      "type": "Rock"
+    },
+    {
+      "position": {
+        "x": 33,
+        "y": 39
+      },
+      "type": "Rock"
+    },
+    {
+      "position": {
+        "x": 33,
+        "y": 40
+      },
+      "type": "Rock"
+    },
+    {
+      "position": {
+        "x": 33,
+        "y": 41
+      },
+      "type": "Rock"
+    },
+    {
+      "position": {
+        "x": 33,
+        "y": 42
+      },
+      "type": "Rock"
+    },
+    {
+      "position": {
+        "x": 16,
+        "y": 6
+      },
+      "type": "Rock"
+    },
+    {
+      "position": {
+        "x": 17,
+        "y": 6
+      },
+      "type": "Rock"
+    },
+    {
+      "position": {
+        "x": 18,
+        "y": 6
+      },
+      "type": "Rock"
+    },
+    {
+      "position": {
+        "x": 19,
+        "y": 6
+      },
+      "type": "Rock"
+    },
+    {
+      "position": {
+        "x": 20,
+        "y": 6
+      },
+      "type": "Rock"
+    },
+    {
+      "position": {
+        "x": 21,
+        "y": 6
+      },
+      "type": "Rock"
+    },
+    {
+      "position": {
+        "x": 22,
+        "y": 6
+      },
+      "type": "Rock"
+    },
+    {
+      "position": {
+        "x": 23,
+        "y": 6
+      },
+      "type": "Rock"
+    },
+    {
+      "position": {
+        "x": 25,
+        "y": 42
+      },
+      "type": "Rock"
+    },
+    {
+      "position": {
+        "x": 26,
+        "y": 42
+      },
+      "type": "Rock"
+    },
+    {
+      "position": {
+        "x": 27,
+        "y": 42
+      },
+      "type": "Rock"
+    },
+    {
+      "position": {
+        "x": 28,
+        "y": 42
+      },
+      "type": "Rock"
+    },
+    {
+      "position": {
+        "x": 29,
+        "y": 42
+      },
+      "type": "Rock"
+    },
+    {
+      "position": {
+        "x": 30,
+        "y": 42
+      },
+      "type": "Rock"
+    },
+    {
+      "position": {
+        "x": 31,
+        "y": 42
+      },
+      "type": "Rock"
+    },
+    {
+      "position": {
+        "x": 32,
+        "y": 42
+      },
+      "type": "Rock"
+    },
+    {
+      "position": {
+        "x": 0,
+        "y": 0
+      },
+      "type": "Grass"
+    },
+    {
+      "position": {
+        "x": 0,
+        "y": 1
+      },
+      "type": "Grass"
+    },
+    {
+      "position": {
+        "x": 1,
+        "y": 0
+      },
+      "type": "Grass"
+    },
+    {
+      "position": {
+        "x": 1,
+        "y": 1
+      },
+      "type": "Grass"
+    },
+    {
+      "position": {
+        "x": 1,
+        "y": 2
+      },
+      "type": "Grass"
+    },
+    {
+      "position": {
+        "x": 2,
+        "y": 1
+      },
+      "type": "Grass"
+    },
+    {
+      "position": {
+        "x": 2,
+        "y": 2
+      },
+      "type": "Grass"
+    }
+  ],
+  "entities": [
+    {
+      "position": {
+        "x": 1,
+        "y": 1
+      },
+      "type": "Monster"
+    },
+    {
+      "position": {
+        "x": 1,
+        "y": 2
+      },
+      "type": "Monster"
+    },
+    {
+      "position": {
+        "x": 1,
+        "y": 3
+      },
+      "type": "Monster"
+    },
+    {
+      "position": {
+        "x": 1,
+        "y": 4
+      },
+      "type": "Monster"
+    },
+    {
+      "position": {
+        "x": 1,
+        "y": 5
+      },
+      "type": "Monster"
+    },
+    {
+      "position": {
+        "x": 1,
+        "y": 6
+      },
+      "type": "Monster"
+    },
+    {
+      "position": {
+        "x": 1,
+        "y": 7
+      },
+      "type": "Monster"
+    },
+    {
+      "position": {
+        "x": 1,
+        "y": 8
+      },
+      "type": "Monster"
+    },
+    {
+      "position": {
+        "x": 1,
+        "y": 9
+      },
+      "type": "Monster"
+    },
+    {
+      "position": {
+        "x": 1,
+        "y": 10
+      },
+      "type": "Monster"
+    },
+    {
+      "position": {
+        "x": 1,
+        "y": 11
+      },
+      "type": "Monster"
+    },
+    {
+      "position": {
+        "x": 1,
+        "y": 12
+      },
+      "type": "Monster"
+    },
+    {
+      "position": {
+        "x": 1,
+        "y": 13
+      },
+      "type": "Monster"
+    },
+    {
+      "position": {
+        "x": 1,
+        "y": 14
+      },
+      "type": "Monster"
+    },
+    {
+      "position": {
+        "x": 1,
+        "y": 15
+      },
+      "type": "Monster"
+    },
+    {
+      "position": {
+        "x": 1,
+        "y": 16
+      },
+      "type": "Monster"
+    }
+  ],
+  "player": {
+    "position": {
+      "x": 14,
+      "y": 14
+    },
+    "type": "Hero"
+  },
+  "worldWidth": 160,
+  "worldHeight": 160,
+  "worldSelector": ".world",
+  "loopPeriod": 50
 }

@@ -24,11 +24,17 @@ SOFTWARE.
 
 
 W = Wandrian = {
-    Position: function(x, y) {
-        this.x = x;
-        this.y = y;
+    Position: function(positionOrX, y) {
+        if (typeof y === 'undefined') {
+            this.x = positionOrX.x;
+            this.y = positionOrX.y;
+        }
+        else {
+            this.x = positionOrX;
+            this.y = y;
+        }
 
-        this.in = function(position) {
+        this.equals = function(position) {
             if (this.x == position.x && this.y == position.y) {
                 return true;
             }
@@ -53,21 +59,23 @@ W = Wandrian = {
 
         // Square where this entity lives. Do not change directly.
         // Use square.setEntity to update all references accordingly
+        // If an entity has a dimension larger than 1, it still only in this
+        // square, which is the top-left square
         this.square;
 
+        // An entity can be larger than one square. If its dimension is 5,
+        // it has basically a 5x5 size. Default dimension is 1
+        this.dimension = 1;
+
         // Function that makes the entity "do something". Each entity should
-        // implement its own loop
+        // implement its own loop function
         this.loop = function() {
             // Default loop: stay in its own position and do nothing
             return this.getPosition()
         };
 
         this.getPosition = function() {
-            return this.world.getEntityPosition(this);
-        };
-
-        this.getSquare = function() {
-            return this.world.getEntitySquare(this);
+            return this.square.position;
         };
 
         // Moves the entity. Note: this is a "private" function. To move the
@@ -76,8 +84,8 @@ W = Wandrian = {
             if (!position ||
                 position.x < 0 ||
                 position.y < 0 ||
-                position.x >= this.world.sizeX ||
-                position.y >= this.world.sizeY) {
+                position.x + this.dimension > this.world.sizeX ||
+                position.y + this.dimension > this.world.sizeY) {
                 console.error(
                     "An entity was moved to an invalid position. There's " +
                     "probably a bug in your collision function or in an " +
@@ -88,7 +96,7 @@ W = Wandrian = {
             // Update last position
             this.lastPosition = this.getPosition();
 
-            var currentSquare = this.getSquare();
+            var currentSquare = this.square;
             var newSquare = this.world.getSquare(position);
 
             // If there's a new square (should always be), and the new square
@@ -116,6 +124,9 @@ W = Wandrian = {
         };
     },
 
+    CollisionHandlers: function() {
+
+    },
 
     // Sometimes many entities can be (temporarely) in the same place. In this
     // case, the collision handling function will be executed to "solve" the
@@ -132,7 +143,7 @@ W = Wandrian = {
                 return false;
             }
 
-            return this.position.in(position);
+            return this.position.equals(position);
         }
     },
 
@@ -236,30 +247,6 @@ W = Wandrian = {
 
         /*********************************************************************/
 
-        this.getEntitySquare = function(entity) {
-            // It is better to loop entities because there are always less
-            // entities than squares
-            for (var i=0; i<this.entities.length; i++) {
-                if (this.entities[i] == entity) {
-                    return this.entities[i].square;
-                }
-            }
-
-            return null;
-        };
-
-        this.getEntityPosition = function(entity) {
-            // It is better to loop entities because there are always less
-            // entities than squares
-            for (var i=0; i<this.entities.length; i++) {
-                if (this.entities[i] == entity) {
-                    return this.entities[i].square.position;
-                }
-            }
-
-            return null;
-        };
-
         this.getAllEntities = function() {
             return this.entities;
         };
@@ -291,7 +278,7 @@ W = Wandrian = {
             var entity = new window[e.type](this);
             entity.id = this.entityIdCounter;
 
-            var square = this.getSquare(new Wandrian.Position(e.x, e.y));
+            var square = this.getSquare(new Wandrian.Position(e.position));
 
             if (!square) {
                 return null;
@@ -360,7 +347,7 @@ W = Wandrian = {
                 var cs = customSquares[i];
 
                 this.setSquare(
-                    new window[cs.type](new Wandrian.Position(cs.x, cs.y), this)
+                    new window[cs.type](new Wandrian.Position(cs.position), this)
                 );
             }
 
@@ -412,12 +399,12 @@ W = Wandrian = {
 
                 var newSquare = this.getSquare(newPosition);
 
-                var curEcc = _.find(entitiesInPositions, function(item) {
-                    return item.in(currentPosition);
+                var curEcc = _.find(entitiesInPositions, function(collection) {
+                    return collection.in(currentPosition);
                 });
 
-                var newEcc = _.find(entitiesInPositions, function(item) {
-                    return item.in(newPosition);
+                var newEcc = _.find(entitiesInPositions, function(collection) {
+                    return collection.in(newPosition);
                 });
 
                 if (newSquare && newSquare.blocking) {
@@ -562,7 +549,6 @@ W = Wandrian = {
         this.gameIsOver = false;
         this.paused = false;
 
-        // TODO - These are temporary variables, no need to store them forever
         this.squares = gameData.squares;
         this.entities = gameData.entities;
         this.player = gameData.player;
@@ -704,10 +690,31 @@ W = Wandrian = {
         }
     },
 
+    CollisionHandlersBuilder: function(params) {
+        // if (!params.name) {
+        //     params.name = '';
+        // }
+
+        // if (!params.blocking) {
+        //     params.blocking = false;
+        // }
+
+        // return function(position, world) {
+        //     Wandrian.Square.call(this, position, world);
+
+        //     this.el = $('<div>').addClass(params.name);
+
+        //     for (var p in params) {
+        //         this[p] = params[p];
+        //     }
+        // }
+    },
+
     Types: {
         Game: 'GameBuilder',
         Entity: 'EntityBuilder',
         Square: 'SquareBuilder',
+        CollisionHandlers: 'CollisionHandlersBuilder',
     },
 
     build: function(params) {

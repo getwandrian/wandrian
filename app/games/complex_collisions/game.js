@@ -2,6 +2,7 @@
 var Monster = W.build({
     type: W.Types.Entity,
     name: 'monster',
+    dimension: 5,
 
     init: function() {
         // Random color
@@ -105,19 +106,6 @@ var Rock = W.build({
     triedEntering: function(entity) {
         game.addToConsole("You can't climb this rock");
     }
-});
-
-var CollisionHandlers = W.build({
-    type: W.Types.CollisionHandlers,
-
-    handlers: [
-        {
-            pair: ['Monster', 'Monster'],
-            handler: function(monster1, monster2) {
-
-            }
-        }
-    ],
 });
 
 var SimpleCollisionsGame = W.build({

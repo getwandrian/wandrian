@@ -107,8 +107,7 @@ var Snake = W.build({
 
     grow: function() {
         var newSegment = this.world.addEntity({
-            x: this.lastSegment.lastPosition.x,
-            y: this.lastSegment.lastPosition.y,
+            position: this.lastSegment.lastPosition,
             type: 'SnakeSegment'
         });
 
@@ -198,8 +197,7 @@ var SnakeGame = W.build({
                 // null will be returned. In this case, try again. For example,
                 // an illegal position might be adding food on the snake itself
                 newFood = this.world.addEntity({
-                    x: foodPosition.x,
-                    y: foodPosition.y,
+                    position: foodPosition,
                     type: 'Food'
                 });
             }
