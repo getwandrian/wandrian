@@ -1,0 +1,65 @@
+
+body, .console {
+    background-color: #404040;
+    color: #dedede;
+    text-align: center;
+}
+
+.container {
+    width: 1000px;
+    margin: 0 auto;
+}
+
+
+/* Default styles */
+.square-row {
+    overflow: auto;
+}
+
+.square {
+    float: left;
+    z-index: 1;
+}
+
+.entity {
+    position: absolute;
+    z-index: 2;
+}
+
+
+/* Game specific styles */
+.grass {
+    background-color: green;
+}
+
+.rock {
+    background-color: gray;
+}
+
+.monster {
+    background-color: red;
+    width: 80px;
+    height: 80px;
+    z-index: 2;
+}
+
+.hero {
+    background-color: white;
+}
+
+.console {
+    margin-top: 20px;
+    width: 414px;
+    height: 63px;
+}
+
+.world {
+    border: 5px solid #dedede;
+    display: inline-block;
+    margin: 0 auto;
+}
+
+.square, .hero {
+    width: 10px;
+    height: 10px;
+}

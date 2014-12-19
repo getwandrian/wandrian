@@ -219,12 +219,17 @@ W = Wandrian = {
 
         /*********************************************************************/
 
-        this.isInside = function(position) {
+        this.isInside = function(position, dimension) {
+            if (!dimension) {
+                dimension = 1;
+            }
+
             if (position.x < 0 || position.y < 0) {
                 return false;
             }
 
-            if (position.x >= this.sizeX || position.y >= this.sizeY) {
+            if (position.x + dimension > this.sizeX ||
+                position.y + dimension > this.sizeY) {
                 return false;
             }
 
@@ -535,12 +540,12 @@ W = Wandrian = {
         };
 
         this.loop = function() {
-            console.time('loop');
+            // console.time('loop');
             this.loopEntities();
             this.loopHandleCollisions();
             this.loopMoveEveryone();
             this.loopRedraw();
-            console.timeEnd('loop');
+            // console.timeEnd('loop');
         };
     },
 

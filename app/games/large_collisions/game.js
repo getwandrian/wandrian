@@ -2,6 +2,7 @@
 var Monster = W.build({
     type: W.Types.Entity,
     className: 'monster',
+    dimension: 8,
 
     init: function() {
         // Random color
@@ -27,12 +28,12 @@ var Monster = W.build({
             newPosition.y = 0;
         }
 
-        if (newPosition.x >= this.world.sizeX) {
-            newPosition.x = this.world.sizeX - 1;
+        if (newPosition.x + this.dimension > this.world.sizeX) {
+            newPosition.x = this.world.sizeX - this.dimension - 1;
         }
 
-        if (newPosition.y >= this.world.sizeY) {
-            newPosition.y = this.world.sizeY - 1;
+        if (newPosition.y + this.dimension > this.world.sizeY) {
+            newPosition.y = this.world.sizeY - this.dimension - 1;
         }
 
         return newPosition;
@@ -131,7 +132,7 @@ var MonsterCollisionHandler = W.build({
             );
 
             // Check if the new position is inside the map
-            if (this.world.isInside(newPosition)) {
+            if (this.world.isInside(newPosition, entities[i].dimension)) {
                 // Position is valid. Change it!
                 entities[i].setPosition(newPosition);
             }
@@ -200,11 +201,6 @@ var SimpleCollisionsGame = W.build({
 
     afterLoop: function() {
         this.currentLoop += 1;
-
-        // if (this.maxLoops == this.currentLoop) {
-        //     this.gameOver = true;
-        //     game.addToConsole('game over!');
-        // }
     },
 
     addToConsole: function(message) {

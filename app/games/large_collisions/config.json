@@ -1,0 +1,35 @@
+{
+  "squares": [],
+  "entities": [
+    {
+      "position": {
+        "x": 1,
+        "y": 1
+      },
+      "type": "Monster"
+    },
+    {
+      "position": {
+        "x": 1,
+        "y": 2
+      },
+      "type": "Monster"
+    }
+  ],
+  "player": {
+    "position": {
+      "x": 14,
+      "y": 14
+    },
+    "type": "Hero"
+  },
+
+  "collisionHandlers": [
+    "MonsterCollisionHandler"
+  ],
+
+  "worldWidth": 40,
+  "worldHeight": 40,
+  "worldSelector": ".world",
+  "loopPeriod": 50
+}
