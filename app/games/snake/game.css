@@ -10,6 +10,23 @@ body, .console {
     margin: 0 auto;
 }
 
+/* Default styles */
+.square-row {
+    overflow: auto;
+}
+
+.square {
+    float: left;
+    z-index: 1;
+}
+
+.entity {
+    position: absolute;
+    z-index: 2;
+}
+
+
+/* Game specific styles */
 .snake,
 .snake-segment {
     background-color: green;

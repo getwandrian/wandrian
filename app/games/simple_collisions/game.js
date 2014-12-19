@@ -1,7 +1,7 @@
 
 var Monster = W.build({
     type: W.Types.Entity,
-    name: 'monster',
+    className: 'monster',
 
     init: function() {
         // Random color
@@ -39,13 +39,14 @@ var Monster = W.build({
     },
 
     loop: function() {
-        return this.randomMove();
+        this.setPosition(this.randomMove());
     },
 });
 
-Hero = W.build({
+
+var Hero = W.build({
     type: W.Types.Entity,
-    name: 'hero',
+    className: 'hero',
 
     possiblePosition: null,
 
@@ -83,22 +84,24 @@ Hero = W.build({
     },
 
     loop: function() {
-        return this.possiblePosition;
+        this.setPosition(this.possiblePosition);
     },
 });
 
+
 var Grass = W.build({
     type: W.Types.Square,
-    name: 'grass',
+    className: 'grass',
 
     entered: function(entity) {
         game.addToConsole('Grass stepping sound');
     }
 });
 
+
 var Rock = W.build({
     type: W.Types.Square,
-    name: 'rock',
+    className: 'rock',
 
     blocking: true,
 
@@ -107,18 +110,38 @@ var Rock = W.build({
     }
 });
 
-var CollisionHandlers = W.build({
-    type: W.Types.CollisionHandlers,
 
-    handlers: [
-        {
-            pair: ['Monster', 'Monster'],
-            handler: function(monster1, monster2) {
+var MonsterCollisionHandler = W.build({
+    type: W.Types.CollisionHandler,
 
+    pairs: [
+        ['Monster', 'Monster'],
+        ['Monster', 'Hero'],
+    ],
+
+    handle: function() {
+        var entities = arguments;
+        console.log(entities);
+
+        for (var i=0; i<entities.length; i++) {
+            var position = entities[i].getPosition();
+
+            var newPosition = new W.Position(
+                position.x + Math.floor(Math.random() * 3) - 1,
+                position.y + Math.floor(Math.random() * 3) - 1
+            );
+
+            // Check if the new position is inside the map
+            if (this.world.isInside(newPosition)) {
+                // Position is valid. Change it!
+                entities[i].setPosition(newPosition);
             }
         }
-    ],
+
+        return true;
+    }
 });
+
 
 var SimpleCollisionsGame = W.build({
     type: W.Types.Game,
@@ -186,31 +209,6 @@ var SimpleCollisionsGame = W.build({
 
         console.log('count', this.world.getAllEntities().length);
 
-    },
-
-    handleCollision: function(position, entities) {
-        var solvedCollisions = [];
-
-        for (var i=0; i<entities.length; i++) {
-            var newPosition = new W.Position(
-                position.x + Math.floor(Math.random() * 3) - 1,
-                position.y + Math.floor(Math.random() * 3) - 1
-            );
-
-            // Check if the new position is inside the map
-            if (!this.isInside(newPosition)) {
-                // Tried moving the entity to an invalid block.
-                // Just leave it in the same place it was before
-                newPosition = position;
-            }
-
-            solvedCollisions.push({
-                position: newPosition,
-                entity: entities[i]
-            });
-        }
-
-        return solvedCollisions;
     },
 
     addToConsole: function(message) {

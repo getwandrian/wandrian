@@ -1081,6 +1081,11 @@
     },
     "type": "Hero"
   },
+
+  "collisionHandlers": [
+    "MonsterCollisionHandler"
+  ],
+
   "worldWidth": 160,
   "worldHeight": 160,
   "worldSelector": ".world",

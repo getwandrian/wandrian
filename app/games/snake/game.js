@@ -1,23 +1,25 @@
 var Food = W.build({
     type: W.Types.Entity,
-    name: 'food',
+    className: 'food',
 });
+
 
 var SnakeSegment = W.build({
     type: W.Types.Entity,
-    name: 'snake-segment',
+    className: 'snake-segment',
 
     previousSegment: null,
 
     loop: function() {
-        return this.previousSegment.getPosition();
+        this.setPosition(this.previousSegment.getPosition());
     },
 });
+
 
 var Snake = W.build({
     type: W.Types.Entity,
     extends: SnakeSegment,
-    name: 'snake',
+    className: 'snake',
 
     disallowedPairs: [
         ['left', 'right'],
@@ -102,7 +104,7 @@ var Snake = W.build({
     },
 
     loop: function() {
-        return this.updatePosition();
+        this.setPosition(this.updatePosition());
     },
 
     grow: function() {
@@ -114,6 +116,44 @@ var Snake = W.build({
         newSegment.previousSegment = this.lastSegment;
         this.lastSegment = newSegment;
     },
+});
+
+
+var CannibalismCollisionHandler = W.build({
+    type: W.Types.CollisionHandler,
+
+    pairs: [
+        ['Snake', 'Snake'],
+        ['Snake', 'SnakeSegment'],
+    ],
+
+    handle: function() {
+        // Snake collided with itself. Game over
+        game.gameOver();
+
+        // Returning false stops everything
+        return false;
+    }
+});
+
+
+var FoodEatingCollisionHandler = W.build({
+    type: W.Types.CollisionHandler,
+
+    pairs: [
+        ['Snake', 'Food'],
+    ],
+
+    handle: function(snake, food) {
+        // "Eat it"
+        this.world.removeEntity(food);
+
+        // Create a new segment. schedule it to create the segment only
+        // after the loop is over (afterLoop)
+        game.growSnakeAfterLoop = true;
+
+        return true;
+    }
 });
 
 
@@ -207,45 +247,6 @@ var SnakeGame = W.build({
 
             this.updateScore();
         }
-    },
-
-    handleCollision: function(position, entities) {
-        var collidedSegmentsCount = _.filter(
-            entities,
-            function(entity) {
-                return entity instanceof Snake ||
-                       entity instanceof SnakeSegment;
-            }
-        ).length;
-
-        if (collidedSegmentsCount > 1) {
-            // Snake collided with itself. Game over
-            game.gameOver();
-        }
-
-        var foodCollided = _.find(
-            entities, function(entity) {
-                return entity instanceof Food;
-            }
-        );
-
-        if (foodCollided) {
-            // "Eat it"
-            this.removeEntity(foodCollided);
-
-            // create a new segment. schedule it to create the segment only
-            // after the loop is over (afterLoop)
-            game.growSnakeAfterLoop = true;
-        }
-
-        var solvedCollisions = [];
-
-        solvedCollisions.push({
-            position: position,
-            entity: this.player
-        });
-
-        return solvedCollisions;
     },
 
     afterGameOver: function() {

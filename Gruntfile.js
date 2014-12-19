@@ -17,19 +17,7 @@ module.exports = function(grunt) {
       files: [
         '<%= path.app %>/**/*',
       ],
-      tasks: ['cssmin', 'uglify', 'htmlmin', 'copy']
-    },
-
-    cssmin: {
-      internal: {
-        files: [{
-          expand: true,
-          cwd: '<%= path.app %>/wandrian',
-          src: '**/*.css',
-          dest: '<%= path.dist %>/wandrian',
-          ext: '.min.css'
-        }]
-      }
+      tasks: ['uglify', 'htmlmin', 'copy']
     },
 
     uglify: {
@@ -114,14 +102,12 @@ module.exports = function(grunt) {
   grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-contrib-htmlmin');
-  grunt.loadNpmTasks('grunt-contrib-cssmin');
   grunt.loadNpmTasks('grunt-contrib-copy');
 
   grunt.loadNpmTasks('grunt-express');
   grunt.loadNpmTasks('grunt-open');
 
   grunt.registerTask('default', [
-    'cssmin:internal',
     'uglify:internal',
     'htmlmin',
     'copy',

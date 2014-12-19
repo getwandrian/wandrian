@@ -16,6 +16,12 @@
     },
     "type": "Snake"
   },
+
+  "collisionHandlers": [
+    "CannibalismCollisionHandler",
+    "FoodEatingCollisionHandler"
+  ],
+
   "worldWidth": 30,
   "worldHeight": 30,
   "worldSelector": ".world",

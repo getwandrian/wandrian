@@ -57,6 +57,10 @@ W = Wandrian = {
         // Store the last position. It is useful in many games
         this.lastPosition;
 
+        // Possible next position. It is set with setPosition, but may change
+        // after collision handling
+        this.nextPosition;
+
         // Square where this entity lives. Do not change directly.
         // Use square.setEntity to update all references accordingly
         // If an entity has a dimension larger than 1, it still only in this
@@ -67,15 +71,26 @@ W = Wandrian = {
         // it has basically a 5x5 size. Default dimension is 1
         this.dimension = 1;
 
+        // Type O Negative =D
+        this.type;
+
         // Function that makes the entity "do something". Each entity should
         // implement its own loop function
         this.loop = function() {
             // Default loop: stay in its own position and do nothing
-            return this.getPosition()
+            this.setPosition(this.getPosition());
         };
 
         this.getPosition = function() {
             return this.square.position;
+        };
+
+        this.setPosition = function(position) {
+            this.nextPosition = position;
+        };
+
+        this.moveToNextPosition = function() {
+            this.move(this.nextPosition);
         };
 
         // Moves the entity. Note: this is a "private" function. To move the
@@ -124,27 +139,13 @@ W = Wandrian = {
         };
     },
 
-    CollisionHandlers: function() {
+    // A collision handler, what else to say?
+    CollisionHandler: function(world) {
+        this.world = world;
 
-    },
+        this.pairs = [];
 
-    // Sometimes many entities can be (temporarely) in the same place. In this
-    // case, the collision handling function will be executed to "solve" the
-    // collision. The EntityCollisionCollection class represents all entities
-    // which are in a specific position, colliding
-    EntityCollisionCollection: function(position, entities) {
-        this.position = position;
-
-        if (!entities) { entities = []; }
-        this.entities = entities;
-
-        this.in = function(position) {
-            if (!position || !this.position) {
-                return false;
-            }
-
-            return this.position.equals(position);
-        }
+        this.handle = function() { return true };
     },
 
 
@@ -207,31 +208,16 @@ W = Wandrian = {
         // squares), but is a good performance helper
         this.entities;
 
+        // Permutations of all existing entities. Ex: if e1, e2, e3 exist in
+        // the game, the permutations will be e1-e2, e1-e3 and e2-e3
+        this.entityPermutations;
+
         this.player;
 
+        // A list of collision handlers to be used in this game
+        this.collisionHandlers = [];
+
         /*********************************************************************/
-
-        this.mergePositions = function(collisionsA, collisionsB) {
-            // Go through each of collisionsB objects
-            _.each(collisionsB, function(itemB) {
-                // Try to find an object in collisionsA ehich is in the same
-                // position as an item in collisionsB
-                var itemA = _.find(collisionsA, function(itemA) {
-                    return itemA.in(itemB.position);
-                });
-
-                if (itemA) {
-                    // If an item is found, merge itemA and itemB
-                    itemA.entities = _.union(itemA.entities, itemB.entities);
-                }
-                else {
-                    // If not found, add a new item to collisionsA
-                    collisionsA.push(itemB);
-                }
-            });
-
-            return collisionsA;
-        };
 
         this.isInside = function(position) {
             if (position.x < 0 || position.y < 0) {
@@ -277,6 +263,7 @@ W = Wandrian = {
         this.addEntity = function(e) {
             var entity = new window[e.type](this);
             entity.id = this.entityIdCounter;
+            entity.type = e.type;
 
             var square = this.getSquare(new Wandrian.Position(e.position));
 
@@ -298,6 +285,8 @@ W = Wandrian = {
 
             this.entities.push(entity);
 
+            this.updatePermutations();
+
             return entity;
         };
 
@@ -314,6 +303,8 @@ W = Wandrian = {
                         // Remove from redundant entity array
                         this.entities = _.without(this.entities, entity);
 
+                        this.updatePermutations();
+
                         return true;
                     }
                 }
@@ -322,7 +313,68 @@ W = Wandrian = {
             return false;
         };
 
-        this.genesis = function(customSquares, entities, player) {
+        this.createPermutation = function(entity1, entity2) {
+            var permutationCollisionHandlers = [];
+
+            var e1Type = entity1.type;
+            var e2Type = entity2.type;
+
+            for (var i=0; i<this.collisionHandlers.length; i++) {
+                var collisionHandler = this.collisionHandlers[i];
+                var pairs = collisionHandler.pairs;
+
+                for (var j=0; j<pairs.length; j++) {
+                    var cond1 = pairs[j][0] == e1Type && pairs[j][1] == e2Type;
+                    var cond2 = pairs[j][0] == e2Type && pairs[j][1] == e1Type;
+
+                    if (cond2) {
+                        // Invert entities
+                        var temp = entity2;
+                        entity2 = entity1;
+                        entity1 = temp;
+                    }
+
+                    if (cond1 || cond2) {
+                        permutationCollisionHandlers.push(collisionHandler);
+                    }
+                }
+            }
+
+            this.entityPermutations.push({
+                entity1: entity1,
+                entity2: entity2,
+                collisionHandlers: permutationCollisionHandlers
+            });
+        };
+
+        this.updatePermutations = function() {
+            this.entityPermutations = [];
+
+            for(var i=0; i<this.entities.length; i++) {
+                var entity1 = this.entities[i];
+
+                for(var j=i; j<this.entities.length; j++) {
+                    var entity2 = this.entities[j];
+
+                    if (entity1 != entity2) {
+                        this.createPermutation(entity1, entity2);
+                    }
+                }
+            }
+        };
+
+        this.addCollisionHandler = function(type) {
+            this.collisionHandlers.push(
+                new window[type](this)
+            );
+        };
+
+        this.genesis = function(
+            customSquares,
+            entities,
+            player,
+            collisionHandlers
+        ) {
             // Clean everything (in case of a restart)
             this.el.empty();
 
@@ -370,6 +422,11 @@ W = Wandrian = {
                 this.el.append(row);
             }
 
+            // Add collision handlers
+            for (var i=0; i<collisionHandlers.length; i++) {
+                this.addCollisionHandler(collisionHandlers[i]);
+            }
+
             // Add entities
             for (var i=0; i<entities.length; i++) {
                 this.addEntity(entities[i]);
@@ -384,51 +441,28 @@ W = Wandrian = {
         /*********************************************************************/
 
         this.loopEntities = function() {
-            var entitiesInPositions = [];
-
             for (var i=0; i<this.entities.length; i++) {
                 var entity = this.entities[i];
                 var currentPosition = entity.getPosition();
 
-                // Entity does action and returns a possible new position
-                var newPosition = entity.loop();
+                // Entity does action
+                entity.loop();
 
-                if (!newPosition) {
-                    console.error(entity, "didn't return a valid position. Check this entities' loop function!");
-                }
-
-                var newSquare = this.getSquare(newPosition);
-
-                var curEcc = _.find(entitiesInPositions, function(collection) {
-                    return collection.in(currentPosition);
-                });
-
-                var newEcc = _.find(entitiesInPositions, function(collection) {
-                    return collection.in(newPosition);
-                });
+                // Get the possible next position. If in the loop the entity
+                // has moved (with setPosition), nextPosition will have changed.
+                // If not, the value will be still the same as in the last loop
+                var newSquare = this.getSquare(entity.nextPosition);
 
                 if (newSquare && newSquare.blocking) {
-                    newEcc = curEcc;
-                    newPosition = currentPosition;
+                    // Forget about moving. Stay where you are
+                    entity.nextPosition = currentPosition;
                     newSquare.triedEntering(entity);
                 }
-
-                if (!newEcc) {
-                    newEcc = new Wandrian.EntityCollisionCollection(
-                        newPosition
-                    );
-
-                    entitiesInPositions.push(newEcc);
-                }
-
-                newEcc.entities.push(entity);
             }
-
-            return entitiesInPositions;
         };
 
-        this.loopHandleCollisions = function(entitiesInPositions) {
-            var thereAreStillCollisions;
+        this.loopHandleCollisions = function() {
+            var collisionFound;
             var iterationCounter = 0;
 
             do {
@@ -438,76 +472,44 @@ W = Wandrian = {
                         'more than 100 iterations. Basically, your ' +
                         'collision handler isn\'t doing a good job. Fix it!'
                     );
+                    break;
                 }
                 iterationCounter++;
 
-                thereAreStillCollisions = false;
+                collisionFound = false;
 
-                for (var i=0; i<entitiesInPositions.length; i++) {
-                    var ecc = entitiesInPositions[i];
-                    var position = ecc.position;
+                for (var i=0; i<this.entityPermutations.length; i++) {
+                    var p = this.entityPermutations[i];
 
-                    // If there's more than one entity in the same position,
-                    // or if there's an entity on a blocking square,
-                    // there's a collision
-                    var square = this.getSquare(position);
-                    if (ecc.entities.length > 1 || (square && square.blocking && ecc.entities.length == 1)) {
-                        thereAreStillCollisions = true;
+                    if (p.entity1 != p.entity2) {
+                        var square = this.getSquare(p.entity1.nextPosition);
+                        var isSamePosition = p.entity1.nextPosition.equals(p.entity2.nextPosition);
 
-                        var solvedCollisions =
-                            this.handleCollision(
-                                position, ecc.entities
-                            );
+                        if (isSamePosition || (square && square.blocking)) {
+                            // Collision found
+                            collisionFound = true;
 
-                        // Clear entity list. If there are still entities in
-                        // this position, they will be re-added in the merge
-                        // function below (mergePositions)
-                        ecc.entities = [];
+                            for (var j=0; j<p.collisionHandlers.length; j++) {
+                                var h = p.collisionHandlers[j];
 
-                        if (!solvedCollisions) {
-                            console.error('Your collision handling function is not returning a value');
-                            continue;
+                                if (!h.handle(p.entity1, p.entity2)) {
+                                    return;
+                                }
+                            }
+
+                            break;
                         }
-
-                        // Convert the returned collection to the internal
-                        // format (TODO - I don't like this)
-                        var convertedSolvedCollisions = [];
-
-                        for (var j=0; j<solvedCollisions.length; j++) {
-                            var newEcc = new Wandrian.EntityCollisionCollection(
-                                solvedCollisions[j].position,
-                                [solvedCollisions[j].entity]
-                            );
-
-                            convertedSolvedCollisions.push(newEcc);
-                        }
-
-                        entitiesInPositions =
-                            this.mergePositions(
-                                entitiesInPositions,
-                                convertedSolvedCollisions
-                            );
-
-                        // Break loop and try again, check if there are
-                        // still collisions to fix
-                        break;
                     }
                 }
-            }
-            while (thereAreStillCollisions);
 
-            return entitiesInPositions;
+            }
+            while (collisionFound);
         };
 
-        this.loopMoveEveryone = function(entitiesInPositions) {
+        this.loopMoveEveryone = function() {
             // No more collisions: move everyone
-            for (var i=0; i<entitiesInPositions.length; i++) {
-                var ecc = entitiesInPositions[i];
-
-                if (ecc.entities.length) {
-                    var entity = ecc.entities[0];
-                    entity.move(ecc.position);
-                }
+            for (var i=0; i<this.entities.length; i++) {
+                this.entities[i].moveToNextPosition();
             }
         }
 
@@ -534,9 +536,9 @@ W = Wandrian = {
 
         this.loop = function() {
             console.time('loop');
-            var entitiesInPositions = this.loopEntities();
-            entitiesInPositions = this.loopHandleCollisions(entitiesInPositions);
-            this.loopMoveEveryone(entitiesInPositions);
+            this.loopEntities();
+            this.loopHandleCollisions();
+            this.loopMoveEveryone();
             this.loopRedraw();
             console.timeEnd('loop');
         };
@@ -552,6 +554,7 @@ W = Wandrian = {
         this.squares = gameData.squares;
         this.entities = gameData.entities;
         this.player = gameData.player;
+        this.collisionHandlers = gameData.collisionHandlers;
 
         this.world = new Wandrian.World(
             gameData.worldWidth,
@@ -589,18 +592,11 @@ W = Wandrian = {
         };
 
         this.start = function() {
-            if (!this.world.handleCollision) {
-                console.error(
-                    'Missing collision handling function. Game will not work!'
-                );
-
-                return;
-            }
-
             this.world.genesis(
                 this.squares,
                 this.entities,
-                this.player
+                this.player,
+                this.collisionHandlers
             );
 
             if (this.init) {
@@ -651,14 +647,15 @@ W = Wandrian = {
             params.extends = Wandrian.Entity;
         }
 
-        if (!params.name) {
-            params.name = '';
+        // TODO - Use some kind of casing conversion for the css class name
+        if (!params.className) {
+            params.className = '';
         }
 
         return function(world) {
             params.extends.call(this, world);
 
-            this.el = $('<div>').addClass(params.name);
+            this.el = $('<div>').addClass(params.className);
 
             for (var p in params) {
                 this[p] = params[p];
@@ -671,8 +668,9 @@ W = Wandrian = {
     },
 
     SquareBuilder: function(params) {
-        if (!params.name) {
-            params.name = '';
+        // TODO - Use some kind of casing conversion for the css class name
+        if (!params.className) {
+            params.className = '';
         }
 
         if (!params.blocking) {
@@ -682,7 +680,7 @@ W = Wandrian = {
         return function(position, world) {
             Wandrian.Square.call(this, position, world);
 
-            this.el = $('<div>').addClass(params.name);
+            this.el = $('<div>').addClass(params.className);
 
             for (var p in params) {
                 this[p] = params[p];
@@ -690,31 +688,21 @@ W = Wandrian = {
         }
     },
 
-    CollisionHandlersBuilder: function(params) {
-        // if (!params.name) {
-        //     params.name = '';
-        // }
+    CollisionHandlerBuilder: function(params) {
+        return function(world) {
+            Wandrian.CollisionHandler.call(this, world);
 
-        // if (!params.blocking) {
-        //     params.blocking = false;
-        // }
-
-        // return function(position, world) {
-        //     Wandrian.Square.call(this, position, world);
-
-        //     this.el = $('<div>').addClass(params.name);
-
-        //     for (var p in params) {
-        //         this[p] = params[p];
-        //     }
-        // }
+            for (var p in params) {
+                this[p] = params[p];
+            }
+        }
     },
 
     Types: {
         Game: 'GameBuilder',
         Entity: 'EntityBuilder',
         Square: 'SquareBuilder',
-        CollisionHandlers: 'CollisionHandlersBuilder',
+        CollisionHandler: 'CollisionHandlerBuilder',
     },
 
     build: function(params) {
