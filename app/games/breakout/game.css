@@ -29,31 +29,20 @@ body, .console {
 /* Game specific styles */
 .paddle {
     background-color: green;
-    width: 70px;
-    height: 10px;
 }
 
 .brick {
     background-color: red;
-    width: 5px;
-    height: 5px;
 }
 
 .ball {
     background-color: blue;
-    width: 10px;
-    height: 10px;
 }
 
 .world {
     border: 5px solid #dedede;
     display: inline-block;
     margin: 0 auto;
-}
-
-.square {
-    width: 5px;
-    height: 5px;
 }
 
 .game-over {

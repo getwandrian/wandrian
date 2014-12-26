@@ -33,7 +33,8 @@
       "x": 40,
       "y": 40
     },
-    "selector": ".world"
+    "selector": ".world",
+    "squareSize": 10
   },
 
   "loopPeriod": 50

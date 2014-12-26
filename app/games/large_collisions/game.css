@@ -37,14 +37,10 @@ body, .console {
 }
 
 .monster {
-    width: 80px;
-    height: 80px;
     z-index: 2;
 }
 
 .still-monster {
-    width: 80px;
-    height: 40px;
     z-index: 2;
 }
 
@@ -52,19 +48,8 @@ body, .console {
     background-color: white;
 }
 
-.console {
-    margin-top: 20px;
-    width: 414px;
-    height: 63px;
-}
-
 .world {
     border: 5px solid #dedede;
     display: inline-block;
     margin: 0 auto;
-}
-
-.square, .hero {
-    width: 10px;
-    height: 10px;
 }

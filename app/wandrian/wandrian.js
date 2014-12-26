@@ -24,7 +24,7 @@ SOFTWARE.
 
 
 W = Wandrian = {
-    Position: function(positionOrX, y) {
+    Vector: function(positionOrX, y) {
         if (typeof y === 'undefined') {
             this.x = positionOrX.x;
             this.y = positionOrX.y;
@@ -44,12 +44,21 @@ W = Wandrian = {
     },
 
     // An entity is an object that lives in the World and does stuff
-    Entity: function(world) {
+    Entity: function(world, size) {
         // Unique id
         this.id;
 
         // World reference
         this.world = world;
+
+        // An entity can be larger than one square. It can be a rectangle, and
+        // its size is defined here. Default: 1x1 square
+        if (size) {
+            this.size = new Wandrian.Vector(size);
+        }
+        else {
+            this.size = new Wandrian.Vector(1, 1);
+        }
 
         // HTML element which is the representation of this entity
         this.el;
@@ -57,8 +66,13 @@ W = Wandrian = {
         // DOM code
         this.el = $('<div>').addClass('w-entity');
 
-        this.el.width(this.world.squareSize);
-        this.el.height(this.world.squareSize);
+        this.el.width(this.world.squareSize * this.size.x);
+        this.el.height(this.world.squareSize * this.size.y);
+
+        // Put the entity somewhere far away, so it doesn't appear on screen
+        // while its true position is not updated
+        this.el[0].style.top = '-10000px';
+        this.el[0].style.left = '-10000px';
 
         this.world.el.append(this.el);
 
@@ -70,17 +84,16 @@ W = Wandrian = {
         this.nextPosition;
 
         // Square where this entity lives. Do not change directly.
-        // Use square.setEntity to update all references accordingly
-        // If an entity has a size larger than 1, it still only in this
+        // Use square.setEntity to update all references accordingly.
+        // If an entity has a size larger than 1, it still lives only in this
         // square, which is the top-left square
         this.square;
 
-        // An entity can be larger than one square. It can be a rectangle, and
-        // its size is defined here. Default: one square
-        this.size = new Wandrian.Position(1, 1);
-
-        // Type O Negative =D
+        // Type O'Negative =D
         this.type;
+
+        // A dirty entity has to be redrawn
+        this.dirty = true;
 
         // Function that makes the entity "do something". Each entity should
         // implement its own loop function
@@ -131,9 +144,6 @@ W = Wandrian = {
                 // Remove entity from the current square
                 if (currentSquare) {
                     currentSquare.setEntity(null);
-
-                    // Mark as dirty, so it is redrawn later
-                    currentSquare.dirty = true;
                 }
 
                 // Run square entered event
@@ -142,7 +152,7 @@ W = Wandrian = {
                 }
 
                 // Mark as dirty, so it is redrawn later
-                newSquare.dirty = true;
+                this.dirty = true;
             }
         };
     },
@@ -175,9 +185,6 @@ W = Wandrian = {
         // Entities cannot pass over blocking squares
         this.blocking;
 
-        // A dirty square has to be redrawn
-        this.dirty = true;
-
         // Entered Square event: triggers every time
         // an Entity enters this Square
         this.entered; // = function(entity) {};
@@ -192,9 +199,6 @@ W = Wandrian = {
 
             if (entity != null) {
                 this.entity.square = this;
-
-                this.entity.el[0].style.top = (this.world.squareSize * this.position.y) + 'px';
-                this.entity.el[0].style.left = (this.world.squareSize * this.position.x) + 'px';
             }
         };
     },
@@ -282,7 +286,7 @@ W = Wandrian = {
             entity.id = this.entityIdCounter;
             entity.type = e.type;
 
-            var square = this.getSquare(new Wandrian.Position(e.position));
+            var square = this.getSquare(new Wandrian.Vector(e.position));
 
             if (!square) {
                 return null;
@@ -295,7 +299,7 @@ W = Wandrian = {
 
             // Update position in square
             square.setEntity(entity);
-            square.dirty = true;
+            this.dirty = true;
 
             this.entityIdCounter++;
 
@@ -426,21 +430,21 @@ W = Wandrian = {
             // later
             for (var i=0; i<this.sizeX; i++) {
                 for (var j=0; j<this.sizeY; j++) {
-                    this.createEmptySquare(new Wandrian.Position(i, j));
+                    this.createEmptySquare(new Wandrian.Vector(i, j));
                 }
             }
 
             // Replace empty squares with custom squares
             for (var i=0; i<customSquares.length; i++) {
                 var cs = customSquares[i];
-                var square = new window[cs.type](new Wandrian.Position(cs.position), this);
+                var square = new window[cs.type](new Wandrian.Vector(cs.position), this);
                 this.setSquare(square);
             }
 
             // Create the world grid and add all squares to it
             for (var i=0; i<this.sizeY; i++) {
                 for (var j=0; j<this.sizeX; j++) {
-                    var sq = this.getSquare(new Wandrian.Position(j, i));
+                    var sq = this.getSquare(new Wandrian.Vector(j, i));
 
                     if (sq.el) {
                         this.el.append(sq.el);
@@ -540,23 +544,17 @@ W = Wandrian = {
         }
 
         this.loopRedraw = function() {
-            for (var i=0; i<this.sizeX; i++) {
-                for (var j=0; j<this.sizeY; j++) {
-                    var square = this.squares[i][j];
+            for (var i=0; i<this.entities.length; i++) {
+                var entity = this.entities[i];
 
-                    if (!square.dirty) { continue; }
+                if (!entity.dirty) { continue; }
 
-                    // // I have used innerHTML because the performance difference
-                    // // (than using "html" and "empty") is relevant here
-                    // if (square.entity) {
-                    //     square.el[0].innerHTML = square.entity.el[0].outerHTML;
-                    // }
-                    // else {
-                    //     square.el[0].innerHTML = '';
-                    // }
-
-                    square.dirty = false;
+                if (entity) {
+                    entity.el[0].style.top = (this.squareSize * entity.square.position.y) + 'px';
+                    entity.el[0].style.left = (this.squareSize * entity.square.position.x) + 'px';
                 }
+
+                entity.dirty = false;
             }
         };
 
@@ -623,25 +621,29 @@ W = Wandrian = {
                 this.init();
             }
 
-            if (this.events) {
-                var gameEvents = [
-                    'afterGameOver',
-                    'beforeLoop',
-                    'afterLoop'
-                ];
+            if (!this.events) {
+                this.events = {};
+            }
 
-                for (var event in this.events) {
-                    if (!_.contains(gameEvents, event)) {
-                        $(document).on(
-                            event, this.events[event].bind(this)
-                        );
-                    }
+            var gameEvents = [
+                'afterGameOver',
+                'beforeLoop',
+                'afterLoop'
+            ];
+
+            for (var event in this.events) {
+                if (!_.contains(gameEvents, event)) {
+                    $(document).on(
+                        event, this.events[event].bind(this)
+                    );
                 }
+            }
 
-                for(var event in gameEvents) {
-                    if (!this.events[event]) {
-                        this.events[event] = function() {};
-                    }
+            for(var i=0; i<gameEvents.length; i++) {
+                var event = gameEvents[i];
+
+                if (!this.events[event]) {
+                    this.events[event] = function() {};
                 }
             }
 
@@ -690,7 +692,12 @@ W = Wandrian = {
         }
 
         return function(world) {
-            params.extends.call(this, world);
+            if (params.size) {
+                params.extends.call(this, world, params.size);
+            }
+            else {
+                params.extends.call(this, world);
+            }
 
             for (var p in params) {
                 this[p] = params[p];

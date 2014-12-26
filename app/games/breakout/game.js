@@ -7,6 +7,8 @@ var Brick = W.build({
 var Ball = W.build({
     type: W.Types.Entity,
     className: 'ball',
+
+    size: new W.Vector(2, 2),
 });
 
 
@@ -14,12 +16,12 @@ var Paddle = W.build({
     type: W.Types.Entity,
     className: 'paddle',
 
-    size: new W.Position(14, 2),
+    size: new W.Vector(14, 2),
 
     possiblePosition: null,
 
     moveToDirection: function(direction) {
-        var newPossiblePosition = new W.Position(
+        var newPossiblePosition = new W.Vector(
             this.possiblePosition.x,
             this.possiblePosition.y
         );

@@ -24,7 +24,8 @@
       "x": 80,
       "y": 100
     },
-    "selector": ".world"
+    "selector": ".world",
+    "squareSize": 5
   },
 
   "loopPeriod": 25

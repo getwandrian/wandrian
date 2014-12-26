@@ -2,7 +2,7 @@
 var Monster = W.build({
     type: W.Types.Entity,
     className: 'monster',
-    size: new W.Position(8, 8),
+    size: new W.Vector(8, 8),
 
     init: function() {
         // Random color
@@ -15,7 +15,7 @@ var Monster = W.build({
 
         var currentPosition = this.getPosition();
 
-        var newPosition = new W.Position(
+        var newPosition = new W.Vector(
             currentPosition.x + diffX,
             currentPosition.y + diffY
         );
@@ -48,7 +48,7 @@ var Monster = W.build({
 var StillMonster = W.build({
     type: W.Types.Entity,
     className: 'still-monster',
-    size: new W.Position(8, 4),
+    size: new W.Vector(8, 4),
 
     init: function() {
         // Random color
@@ -71,7 +71,7 @@ var MonsterCollisionHandler = W.build({
         //for (var i=0; i<entities.length; i++) {
             var position = e1.getPosition();
 
-            var newPosition = new W.Position(
+            var newPosition = new W.Vector(
                 position.x + Math.floor(Math.random() * 3) - 1,
                 position.y + Math.floor(Math.random() * 3) - 1
             );

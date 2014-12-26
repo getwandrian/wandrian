@@ -14,7 +14,7 @@ var Monster = W.build({
 
         var currentPosition = this.getPosition();
 
-        var newPosition = new W.Position(
+        var newPosition = new W.Vector(
             currentPosition.x + diffX,
             currentPosition.y + diffY
         );
@@ -51,7 +51,7 @@ var Hero = W.build({
     possiblePosition: null,
 
     moveToDirection: function(direction) {
-        var newPossiblePosition = new W.Position(
+        var newPossiblePosition = new W.Vector(
             this.possiblePosition.x,
             this.possiblePosition.y
         );
@@ -125,7 +125,7 @@ var MonsterCollisionHandler = W.build({
         for (var i=0; i<entities.length; i++) {
             var position = entities[i].getPosition();
 
-            var newPosition = new W.Position(
+            var newPosition = new W.Vector(
                 position.x + Math.floor(Math.random() * 3) - 1,
                 position.y + Math.floor(Math.random() * 3) - 1
             );

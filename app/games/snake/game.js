@@ -60,7 +60,7 @@ var Snake = W.build({
     updatePosition: function() {
         var currentPosition = this.getPosition();
 
-        var newPossiblePosition = new W.Position(
+        var newPossiblePosition = new W.Vector(
             currentPosition.x,
             currentPosition.y
         );
@@ -209,10 +209,10 @@ var SnakeGame = W.build({
                 this.world.player.grow();
 
                 // Add some new food randomly
-                var newFood
+                var newFood;
 
                 do {
-                    var foodPosition = new W.Position(
+                    var foodPosition = new W.Vector(
                         Math.floor(Math.random() * this.world.sizeX),
                         Math.floor(Math.random() * this.world.sizeY)
                     );
