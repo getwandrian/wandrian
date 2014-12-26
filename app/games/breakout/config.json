@@ -1,0 +1,31 @@
+{
+  "squares": [],
+  "entities": [
+    {
+      "position": {
+        "x": 50,
+        "y": 88
+      },
+      "type": "Ball"
+    }
+  ],
+  "player": {
+    "position": {
+      "x": 40,
+      "y": 90
+    },
+    "type": "Paddle"
+  },
+
+  "collisionHandlers": [],
+
+  "world": {
+    "size": {
+      "x": 80,
+      "y": 100
+    },
+    "selector": ".world"
+  },
+
+  "loopPeriod": 25
+}

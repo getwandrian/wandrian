@@ -54,6 +54,14 @@ W = Wandrian = {
         // HTML element which is the representation of this entity
         this.el;
 
+        // DOM code
+        this.el = $('<div>').addClass('w-entity');
+
+        this.el.width(this.world.squareSize);
+        this.el.height(this.world.squareSize);
+
+        this.world.el.append(this.el);
+
         // Store the last position. It is useful in many games
         this.lastPosition;
 
@@ -63,13 +71,13 @@ W = Wandrian = {
 
         // Square where this entity lives. Do not change directly.
         // Use square.setEntity to update all references accordingly
-        // If an entity has a dimension larger than 1, it still only in this
+        // If an entity has a size larger than 1, it still only in this
         // square, which is the top-left square
         this.square;
 
-        // An entity can be larger than one square. If its dimension is 5,
-        // it has basically a 5x5 size. Default dimension is 1
-        this.dimension = 1;
+        // An entity can be larger than one square. It can be a rectangle, and
+        // its size is defined here. Default: one square
+        this.size = new Wandrian.Position(1, 1);
 
         // Type O Negative =D
         this.type;
@@ -99,8 +107,8 @@ W = Wandrian = {
             if (!position ||
                 position.x < 0 ||
                 position.y < 0 ||
-                position.x + this.dimension > this.world.sizeX ||
-                position.y + this.dimension > this.world.sizeY) {
+                position.x + this.size.x > this.world.sizeX ||
+                position.y + this.size.y > this.world.sizeY) {
                 console.error(
                     "An entity was moved to an invalid position. There's " +
                     "probably a bug in your collision function or in an " +
@@ -184,21 +192,26 @@ W = Wandrian = {
 
             if (entity != null) {
                 this.entity.square = this;
+
+                this.entity.el[0].style.top = (this.world.squareSize * this.position.y) + 'px';
+                this.entity.el[0].style.left = (this.world.squareSize * this.position.x) + 'px';
             }
         };
     },
 
 
     // A World is where things happen
-    World: function(sizeX, sizeY, selector) {
+    World: function(sizeX, sizeY, selector, squareSize) {
         this.el = $(selector);
+        this.el.addClass('w-world');
 
         this.sizeX = sizeX;
         this.sizeY = sizeY;
 
-        // Collision handling function.
-        // MUST BE IMPLEMENTED SEPARATELY
-        this.handleCollision;
+        this.squareSize = squareSize;
+
+        this.el.width(squareSize * this.sizeX);
+        this.el.height(squareSize * this.sizeY);
 
         this.entityIdCounter = 0;
 
@@ -219,17 +232,17 @@ W = Wandrian = {
 
         /*********************************************************************/
 
-        this.isInside = function(position, dimension) {
-            if (!dimension) {
-                dimension = 1;
+        this.isInside = function(position, size) {
+            if (!size) {
+                size = { x: 1, y: 1 };
             }
 
             if (position.x < 0 || position.y < 0) {
                 return false;
             }
 
-            if (position.x + dimension > this.sizeX ||
-                position.y + dimension > this.sizeY) {
+            if (position.x + size.x > this.sizeX ||
+                position.y + size.y > this.sizeY) {
                 return false;
             }
 
@@ -246,7 +259,6 @@ W = Wandrian = {
 
         this.createEmptySquare = function(position) {
             var square = new Wandrian.Square(position, this);
-            square.el = $('<div>');
             this.squares[position.x][position.y] = square;
             return square;
         };
@@ -281,10 +293,9 @@ W = Wandrian = {
                 return null;
             }
 
+            // Update position in square
             square.setEntity(entity);
             square.dirty = true;
-
-            entity.el.addClass('entity');
 
             this.entityIdCounter++;
 
@@ -374,6 +385,26 @@ W = Wandrian = {
             );
         };
 
+        this.areOverlapping = function(entity1, entity2) {
+            var e1x1 = entity1.nextPosition.x;
+            var e1x2 = entity1.nextPosition.x + entity1.size.x;
+            var e2x1 = entity2.nextPosition.x;
+            var e2x2 = entity2.nextPosition.x + entity2.size.x;
+
+            var e1y1 = entity1.nextPosition.y;
+            var e1y2 = entity1.nextPosition.y + entity1.size.y;
+            var e2y1 = entity2.nextPosition.y;
+            var e2y2 = entity2.nextPosition.y + entity2.size.y;
+
+            if (e1x1 < e2x2 && e1x2 > e2x1 &&
+                e1y1 < e2y2 && e1y2 > e2y1) {
+
+                return true;
+            }
+
+            return false;
+        };
+
         this.genesis = function(
             customSquares,
             entities,
@@ -402,29 +433,19 @@ W = Wandrian = {
             // Replace empty squares with custom squares
             for (var i=0; i<customSquares.length; i++) {
                 var cs = customSquares[i];
-
-                this.setSquare(
-                    new window[cs.type](new Wandrian.Position(cs.position), this)
-                );
-            }
-
-            // Add the square class to all square elements
-            for (var i=0; i<this.sizeX; i++) {
-                for (var j=0; j<this.sizeY; j++) {
-                    this.squares[i][j].el.addClass('square');
-                }
+                var square = new window[cs.type](new Wandrian.Position(cs.position), this);
+                this.setSquare(square);
             }
 
             // Create the world grid and add all squares to it
             for (var i=0; i<this.sizeY; i++) {
-                var row = $('<div>').addClass('square-row');
-
                 for (var j=0; j<this.sizeX; j++) {
                     var sq = this.getSquare(new Wandrian.Position(j, i));
-                    row.append(sq.el);
-                }
 
-                this.el.append(row);
+                    if (sq.el) {
+                        this.el.append(sq.el);
+                    }
+                }
             }
 
             // Add collision handlers
@@ -471,10 +492,10 @@ W = Wandrian = {
             var iterationCounter = 0;
 
             do {
-                if (iterationCounter >= 100) {
+                if (iterationCounter >= 100000) {
                     console.error(
                         'The collision handling iteration loop has reached ' +
-                        'more than 100 iterations. Basically, your ' +
+                        'more than 100000 iterations. Basically, your ' +
                         'collision handler isn\'t doing a good job. Fix it!'
                     );
                     break;
@@ -488,9 +509,9 @@ W = Wandrian = {
 
                     if (p.entity1 != p.entity2) {
                         var square = this.getSquare(p.entity1.nextPosition);
-                        var isSamePosition = p.entity1.nextPosition.equals(p.entity2.nextPosition);
+                        var areOverlapping = this.areOverlapping(p.entity1, p.entity2);
 
-                        if (isSamePosition || (square && square.blocking)) {
+                        if (areOverlapping || (square && square.blocking)) {
                             // Collision found
                             collisionFound = true;
 
@@ -525,14 +546,14 @@ W = Wandrian = {
 
                     if (!square.dirty) { continue; }
 
-                    // I have used innerHTML because the performance difference
-                    // (than using "html" and "empty") is valid here
-                    if (square.entity) {
-                        square.el[0].innerHTML = square.entity.el[0].outerHTML;
-                    }
-                    else {
-                        square.el[0].innerHTML = '';
-                    }
+                    // // I have used innerHTML because the performance difference
+                    // // (than using "html" and "empty") is relevant here
+                    // if (square.entity) {
+                    //     square.el[0].innerHTML = square.entity.el[0].outerHTML;
+                    // }
+                    // else {
+                    //     square.el[0].innerHTML = '';
+                    // }
 
                     square.dirty = false;
                 }
@@ -540,12 +561,12 @@ W = Wandrian = {
         };
 
         this.loop = function() {
-            // console.time('loop');
+            console.time('loop');
             this.loopEntities();
             this.loopHandleCollisions();
             this.loopMoveEveryone();
             this.loopRedraw();
-            // console.timeEnd('loop');
+            console.timeEnd('loop');
         };
     },
 
@@ -561,35 +582,29 @@ W = Wandrian = {
         this.player = gameData.player;
         this.collisionHandlers = gameData.collisionHandlers;
 
-        this.world = new Wandrian.World(
-            gameData.worldWidth,
-            gameData.worldHeight,
-            gameData.worldSelector
-        );
+        this.events = {};
 
-        // Event that is executed after the game was set to over
-        this.afterGameOver = function() {};
+        this.world = new Wandrian.World(
+            gameData.world.size.x,
+            gameData.world.size.y,
+            gameData.world.selector,
+            gameData.world.squareSize
+        );
 
         this.gameOver = function() {
             if (!this.gameIsOver) {
-                this.afterGameOver();
+                this.events.afterGameOver.call(this);
             }
 
             this.gameIsOver = true;
 
         };
 
-        // Main loop beginning event (for custom stuff needed in any game)
-        this.beforeLoop = function() {};
-
-        // Main loop end event (for custom stuff needed in any game)
-        this.afterLoop = function() {};
-
         this.loop = function() {
             if (!this.gameIsOver) {
-                this.beforeLoop();
+                this.events.beforeLoop.call(this);
                 this.world.loop();
-                this.afterLoop();
+                this.events.afterLoop.call(this);
             }
             else {
                 this.end();
@@ -608,8 +623,30 @@ W = Wandrian = {
                 this.init();
             }
 
+            if (this.events) {
+                var gameEvents = [
+                    'afterGameOver',
+                    'beforeLoop',
+                    'afterLoop'
+                ];
+
+                for (var event in this.events) {
+                    if (!_.contains(gameEvents, event)) {
+                        $(document).on(
+                            event, this.events[event].bind(this)
+                        );
+                    }
+                }
+
+                for(var event in gameEvents) {
+                    if (!this.events[event]) {
+                        this.events[event] = function() {};
+                    }
+                }
+            }
+
             this.loopInterval = setInterval(
-                $.proxy(this.loop, this), this.loopPeriod);
+                this.loop.bind(this), this.loopPeriod);
         };
 
         this.end = function() {
@@ -624,7 +661,7 @@ W = Wandrian = {
             }
             else {
                 this.loopInterval = setInterval(
-                    $.proxy(this.loop, this), this.loopPeriod);
+                    this.loop.bind(this), this.loopPeriod);
             }
         }
     },
@@ -652,18 +689,17 @@ W = Wandrian = {
             params.extends = Wandrian.Entity;
         }
 
-        // TODO - Use some kind of casing conversion for the css class name
-        if (!params.className) {
-            params.className = '';
-        }
-
         return function(world) {
             params.extends.call(this, world);
 
-            this.el = $('<div>').addClass(params.className);
-
             for (var p in params) {
                 this[p] = params[p];
+            }
+
+
+            // TODO - I don't like this here
+            if (params.className) {
+                this.el.addClass(params.className);
             }
 
             if (this.init) {
@@ -673,11 +709,6 @@ W = Wandrian = {
     },
 
     SquareBuilder: function(params) {
-        // TODO - Use some kind of casing conversion for the css class name
-        if (!params.className) {
-            params.className = '';
-        }
-
         if (!params.blocking) {
             params.blocking = false;
         }
@@ -685,7 +716,18 @@ W = Wandrian = {
         return function(position, world) {
             Wandrian.Square.call(this, position, world);
 
-            this.el = $('<div>').addClass(params.className);
+            // TODO - I don't like this here (should be in the constructor)
+            this.el = $('<div>').addClass('w-square');
+
+            this.el.width(world.squareSize);
+            this.el.height(world.squareSize);
+
+            this.el[0].style.top = (world.squareSize * position.y) + 'px';
+            this.el[0].style.left = (world.squareSize * position.x) + 'px';
+
+            if (params.className) {
+                this.el.addClass(params.className);
+            }
 
             for (var p in params) {
                 this[p] = params[p];

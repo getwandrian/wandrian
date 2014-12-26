@@ -1086,8 +1086,14 @@
     "MonsterCollisionHandler"
   ],
 
-  "worldWidth": 160,
-  "worldHeight": 160,
-  "worldSelector": ".world",
+  "world": {
+    "size": {
+      "x": 160,
+      "y": 160
+    },
+    "selector": ".world",
+    "squareSize": 3
+  },
+
   "loopPeriod": 50
 }

@@ -62,7 +62,18 @@ module.exports = function(grunt) {
         }]
       },
 
-      libs: {
+      lib: {
+        files: [
+          {
+            expand: true,
+            cwd: '<%= path.app %>/wandrian',
+            src: ['**/*.js'],
+            dest: '<%= path.dist %>/wandrian'
+          },
+        ]
+      },
+
+      external_libs: {
         files: [
           {
             expand: true,

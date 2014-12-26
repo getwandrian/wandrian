@@ -172,39 +172,70 @@ var SnakeGame = W.build({
         $('.game-over').hide();
     },
 
-    addEvents: function() {
-        $(document).on('keydown', $.proxy(
-            function(e) {
-                this.keysPressed.push(e.which);
-            },
-            this
-        ));
-    },
+    events: {
+        keydown: function(e) {
+            this.keysPressed.push(e.which);
+        },
 
-    beforeLoop: function() {
-        for (var i=0; i<this.keysPressed.length; i++) {
-            switch(this.keysPressed[i]) {
-            case 37: // left
-                this.world.player.changeDirection('left');
-                break;
+        beforeLoop: function() {
+            for (var i=0; i<this.keysPressed.length; i++) {
+                switch(this.keysPressed[i]) {
+                case 37: // left
+                    this.world.player.changeDirection('left');
+                    break;
 
-            case 38: // up
-                this.world.player.changeDirection('up');
-                break;
+                case 38: // up
+                    this.world.player.changeDirection('up');
+                    break;
 
-            case 39: // right
-                this.world.player.changeDirection('right');
-                break;
+                case 39: // right
+                    this.world.player.changeDirection('right');
+                    break;
 
-            case 40: // down
-                this.world.player.changeDirection('down');
-                break;
+                case 40: // down
+                    this.world.player.changeDirection('down');
+                    break;
 
-            default: break;
+                default: break;
+                }
             }
-        }
 
-        this.keysPressed = [];
+            this.keysPressed = [];
+        },
+
+        afterLoop: function() {
+            if (this.growSnakeAfterLoop) {
+                // Grow the snake
+                this.world.player.grow();
+
+                // Add some new food randomly
+                var newFood
+
+                do {
+                    var foodPosition = new W.Position(
+                        Math.floor(Math.random() * this.world.sizeX),
+                        Math.floor(Math.random() * this.world.sizeY)
+                    );
+
+                    // Try creating the new food. If it is on an illegal position,
+                    // null will be returned. In this case, try again. For example,
+                    // an illegal position might be adding food on the snake itself
+                    newFood = this.world.addEntity({
+                        position: foodPosition,
+                        type: 'Food'
+                    });
+                }
+                while(newFood == null);
+
+                this.growSnakeAfterLoop = false;
+
+                this.updateScore();
+            }
+        },
+
+        afterGameOver: function() {
+            $('.game-over').show();
+        },
     },
 
     updateScore: function() {
@@ -217,40 +248,6 @@ var SnakeGame = W.build({
         }
 
         $('.current-score').html(this.currentScore);
-    },
-
-    afterLoop: function() {
-        if (this.growSnakeAfterLoop) {
-            // Grow the snake
-            this.world.player.grow();
-
-            // Add some new food randomly
-            var newFood
-
-            do {
-                var foodPosition = new W.Position(
-                    Math.floor(Math.random() * this.world.sizeX),
-                    Math.floor(Math.random() * this.world.sizeY)
-                );
-
-                // Try creating the new food. If it is on an illegal position,
-                // null will be returned. In this case, try again. For example,
-                // an illegal position might be adding food on the snake itself
-                newFood = this.world.addEntity({
-                    position: foodPosition,
-                    type: 'Food'
-                });
-            }
-            while(newFood == null);
-
-            this.growSnakeAfterLoop = false;
-
-            this.updateScore();
-        }
-    },
-
-    afterGameOver: function() {
-        $('.game-over').show();
     },
 });
 
@@ -265,7 +262,6 @@ var newGame = function() {
 
     $.getJSON('config.json', function(gameData) {
         game = new SnakeGame(gameData);
-        game.addEvents();
         game.start();
     });
 }

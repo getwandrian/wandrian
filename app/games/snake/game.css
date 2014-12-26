@@ -11,18 +11,18 @@ body, .console {
 }
 
 /* Default styles */
-.square-row {
-    overflow: auto;
-}
-
-.square {
-    float: left;
+.w-square {
+    position: absolute;
     z-index: 1;
 }
 
-.entity {
+.w-entity {
     position: absolute;
     z-index: 2;
+}
+
+.w-world {
+    position: relative;
 }
 
 

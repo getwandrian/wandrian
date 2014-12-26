@@ -10,26 +10,31 @@
     },
     {
       "position": {
-        "x": 1,
-        "y": 2
+        "x": 20,
+        "y": 20
       },
       "type": "Monster"
+    },
+    {
+      "position": {
+        "x": 30,
+        "y": 30
+      },
+      "type": "StillMonster"
     }
   ],
-  "player": {
-    "position": {
-      "x": 14,
-      "y": 14
-    },
-    "type": "Hero"
-  },
 
   "collisionHandlers": [
     "MonsterCollisionHandler"
   ],
 
-  "worldWidth": 40,
-  "worldHeight": 40,
-  "worldSelector": ".world",
+  "world": {
+    "size": {
+      "x": 40,
+      "y": 40
+    },
+    "selector": ".world"
+  },
+
   "loopPeriod": 50
 }

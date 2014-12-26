@@ -22,8 +22,14 @@
     "FoodEatingCollisionHandler"
   ],
 
-  "worldWidth": 30,
-  "worldHeight": 30,
-  "worldSelector": ".world",
+  "world": {
+    "size": {
+      "x": 30,
+      "y": 30
+    },
+    "selector": ".world",
+    "squareSize": 10
+  },
+
   "loopPeriod": 100
 }

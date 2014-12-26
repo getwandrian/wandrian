@@ -1,52 +1,20 @@
-
-var Monster = W.build({
+var Brick = W.build({
     type: W.Types.Entity,
-    className: 'monster',
-
-    init: function() {
-        // Random color
-        this.el.css('background-color', "#"+((1<<24)*Math.random()|0).toString(16));
-    },
-
-    randomMove: function() {
-        var diffX = Math.floor(Math.random() * 3) - 1;
-        var diffY = Math.floor(Math.random() * 3) - 1;
-
-        var currentPosition = this.getPosition();
-
-        var newPosition = new W.Position(
-            currentPosition.x + diffX,
-            currentPosition.y + diffY
-        );
-
-        if (newPosition.x < 0) {
-            newPosition.x = 0;
-        }
-
-        if (newPosition.y < 0) {
-            newPosition.y = 0;
-        }
-
-        if (newPosition.x >= this.world.sizeX) {
-            newPosition.x = this.world.sizeX - 1;
-        }
-
-        if (newPosition.y >= this.world.sizeY) {
-            newPosition.y = this.world.sizeY - 1;
-        }
-
-        return newPosition;
-    },
-
-    loop: function() {
-        this.setPosition(this.randomMove());
-    },
+    className: 'brick',
 });
 
 
-var Hero = W.build({
+var Ball = W.build({
     type: W.Types.Entity,
-    className: 'hero',
+    className: 'ball',
+});
+
+
+var Paddle = W.build({
+    type: W.Types.Entity,
+    className: 'paddle',
+
+    size: new W.Position(14, 2),
 
     possiblePosition: null,
 
@@ -64,17 +32,9 @@ var Hero = W.build({
             case 'right':
                 newPossiblePosition.x = this.possiblePosition.x + 1;
                 break;
-
-            case 'up':
-                newPossiblePosition.y = this.possiblePosition.y - 1;
-                break;
-
-            case 'down':
-                newPossiblePosition.y = this.possiblePosition.y + 1;
-                break;
         }
 
-        if (this.world.isInside(newPossiblePosition)) {
+        if (this.world.isInside(newPossiblePosition, this.size)) {
             this.possiblePosition = newPossiblePosition;
         }
     },
@@ -89,60 +49,7 @@ var Hero = W.build({
 });
 
 
-var Grass = W.build({
-    type: W.Types.Square,
-    className: 'grass',
-
-    entered: function(entity) {
-        game.addToConsole('Grass stepping sound');
-    }
-});
-
-
-var Rock = W.build({
-    type: W.Types.Square,
-    className: 'rock',
-
-    blocking: true,
-
-    triedEntering: function(entity) {
-        game.addToConsole("You can't climb this rock");
-    }
-});
-
-
-var MonsterCollisionHandler = W.build({
-    type: W.Types.CollisionHandler,
-
-    pairs: [
-        ['Monster', 'Monster'],
-        ['Monster', 'Hero'],
-    ],
-
-    handle: function() {
-        var entities = arguments;
-
-        for (var i=0; i<entities.length; i++) {
-            var position = entities[i].getPosition();
-
-            var newPosition = new W.Position(
-                position.x + Math.floor(Math.random() * 3) - 1,
-                position.y + Math.floor(Math.random() * 3) - 1
-            );
-
-            // Check if the new position is inside the map
-            if (this.world.isInside(newPosition)) {
-                // Position is valid. Change it!
-                entities[i].setPosition(newPosition);
-            }
-        }
-
-        return true;
-    }
-});
-
-
-var SimpleCollisionsGame = W.build({
+var BreakoutGame = W.build({
     type: W.Types.Game,
 
     init: function() {
@@ -213,7 +120,6 @@ var SimpleCollisionsGame = W.build({
         console.val(console.val() + '\n' + message)
                .scrollTop(console[0].scrollHeight);
     },
-
 });
 
 
@@ -226,7 +132,7 @@ var newGame = function() {
     }
 
     $.getJSON('config.json', function(gameData) {
-        game = new SimpleCollisionsGame(gameData);
+        game = new BreakoutGame(gameData);
         game.start();
     });
 }
@@ -241,7 +147,6 @@ $(function() {
 
     $('.restart').on('click', function(e) {
         e.preventDefault();
-
         newGame();
     });
 });
