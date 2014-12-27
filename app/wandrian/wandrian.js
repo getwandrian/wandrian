@@ -156,6 +156,17 @@ W = Wandrian = {
                 this.dirty = true;
             }
         };
+
+        this.setSprite = function(spriteName) {
+            // Remove any existing sprite
+            var index = this.el.className.indexOf('w-sprite');
+            if (index != -1) {
+                this.el.className = this.el.className.substr(0, index);
+            }
+
+            // Add sprite class
+            this.el.className += ' w-sprite-' + spriteName;
+        };
     },
 
     // A collision handler, what else to say?
@@ -591,6 +602,7 @@ W = Wandrian = {
         this.events = {};
 
         Wandrian.Game.Audio = {};
+        Wandrian.Game.Sprites = {};
 
         // Load resources in a static variable
         if (gameData.resources) {
@@ -601,12 +613,28 @@ W = Wandrian = {
                     var src = audioResources[audio].src;
                     var loop = audioResources[audio].loop ? true : false;
 
-                    var wAudio = new Wandrian.Audio('audio/' + src, loop);
+                    var wAudio = new Wandrian.Audio(audio, 'audio/' + src, loop);
                     Wandrian.Game.Audio[audio] = wAudio;
                 }
             }
-        }
 
+            if (gameData.resources.sprites) {
+                var spriteResources = gameData.resources.sprites;
+
+                for (var sprite in spriteResources) {
+                    var src = spriteResources[sprite].src;
+                    var from = spriteResources[sprite].from;
+                    var to = spriteResources[sprite].to;
+                    var time = spriteResources[sprite].time;
+                    var steps = spriteResources[sprite].steps;
+                    var loop = spriteResources[sprite].loop ? true : false;
+
+                    var wSprite = new Wandrian.Sprite(
+                        sprite, 'sprites/' + src, from, to, time, steps, loop);
+                    Wandrian.Game.Sprites[sprite] = wSprite;
+                }
+            }
+        }
 
         this.world = new Wandrian.World(
             gameData.world.size.x,
@@ -695,7 +723,8 @@ W = Wandrian = {
 
     /****************************** RESOURCES *******************************/
 
-    Audio: function(src, loop) {
+    Audio: function(name, src, loop) {
+        this.name = name;
         this.src = src;
 
         this.el = document.createElement('audio');
@@ -721,10 +750,42 @@ W = Wandrian = {
         };
     },
 
-    Sprite: function(src, time, steps) {
+    Sprite: function(name, src, from, to, time, steps, loop) {
+        this.name = name;
         this.src = src;
         this.time = time;
         this.steps = steps;
+        this.loop = loop;
+
+        this.createCSSRule = function(rules) {
+            var style = document.createElement('style');
+            style.type = 'text/css';
+            style.innerHTML = rules;
+
+            document.getElementsByTagName('head')[0].appendChild(style);
+        };
+
+        // TODO - Could this be better? How?
+        this.createCSSRule(
+            '@-webkit-keyframes w-keyframes-' + this.name +
+            ' { from { background-position: ' + from.x +
+            'px; } to { background-position: ' + to.x + 'px; } }'
+        );
+
+        var loopStr = this.loop ? 'infinite' : '';
+
+        this.createCSSRule(
+            '.w-sprite-' + this.name + ' {' +
+            // '    width: 50px;' +
+            // '    height: 72px;' +
+            '    background-image: url("' + this.src + '");' +
+            '    -webkit-animation: w-keyframes-' + this.name + ' ' + this.time + 's steps(' + steps + ') ' + loopStr + ';' +
+            '       -moz-animation: w-keyframes-' + this.name + ' ' + this.time + 's steps(' + steps + ') ' + loopStr + ';' +
+            '        -ms-animation: w-keyframes-' + this.name + ' ' + this.time + 's steps(' + steps + ') ' + loopStr + ';' +
+            '         -o-animation: w-keyframes-' + this.name + ' ' + this.time + 's steps(' + steps + ') ' + loopStr + ';' +
+            '            animation: w-keyframes-' + this.name + ' ' + this.time + 's steps(' + steps + ') ' + loopStr + ';' +
+            '}'
+        );
 
         this.play = function() {
 
@@ -733,6 +794,7 @@ W = Wandrian = {
         this.stop = function() {
 
         };
+
     },
 
     /******************************* BUILDERS *******************************/
@@ -819,8 +881,6 @@ W = Wandrian = {
         Entity: 'EntityBuilder',
         Square: 'SquareBuilder',
         CollisionHandler: 'CollisionHandlerBuilder',
-        Audio: 'AudioBuilder',
-        Sprite: 'SpriteBuilder',
     },
 
     build: function(params) {

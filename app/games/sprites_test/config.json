@@ -1,0 +1,58 @@
+{
+  "squares": [],
+  "entities": [
+    {
+      "position": {
+        "x": 1,
+        "y": 16
+      },
+      "type": "GoodbyeMonster"
+    },
+    {
+      "position": {
+        "x": 10,
+        "y": 20
+      },
+      "type": "GoodbyeMonster"
+    },
+    {
+      "position": {
+        "x": 30,
+        "y": 5
+      },
+      "type": "GoodbyeMonster"
+    }
+  ],
+
+  "collisionHandlers": [],
+
+  "world": {
+    "size": {
+      "x": 40,
+      "y": 40
+    },
+    "id": "world",
+    "squareSize": 10
+  },
+
+  "resources": {
+    "sprites": {
+      "goodbye": {
+        "src": "sprite-steps.png",
+        "from": {
+          "x": 0,
+          "y": 0
+        },
+        "to": {
+          "x": -500,
+          "y": 0
+        },
+        "time": 0.8,
+        "steps": 10,
+        "loop": true
+      }
+    }
+  },
+
+  "loopPeriod": 50
+}
