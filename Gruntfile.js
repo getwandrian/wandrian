@@ -80,12 +80,6 @@ module.exports = function(grunt) {
             cwd: '<%= path.app %>/bower_components/jquery/dist',
             src: ['**/*.js', '**/*.map'],
             dest: '<%= path.dist %>/libs'
-          },
-          {
-            expand: true,
-            cwd: '<%= path.app %>/bower_components/underscore',
-            src: ['**/*.js', '**/*.map'],
-            dest: '<%= path.dist %>/libs'
           }
         ]
       },

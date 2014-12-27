@@ -64,17 +64,18 @@ W = Wandrian = {
         this.el;
 
         // DOM code
-        this.el = $('<div>').addClass('w-entity');
+        this.el = document.createElement('div')
+        this.el.className = 'w-entity';
 
-        this.el.width(this.world.squareSize * this.size.x);
-        this.el.height(this.world.squareSize * this.size.y);
+        this.el.style.width = (this.world.squareSize * this.size.x) + 'px';
+        this.el.style.height = (this.world.squareSize * this.size.y) + 'px';
 
         // Put the entity somewhere far away, so it doesn't appear on screen
         // while its true position is not updated
-        this.el[0].style.top = '-10000px';
-        this.el[0].style.left = '-10000px';
+        this.el.style.top = '-10000px';
+        this.el.style.left = '-10000px';
 
-        this.world.el.append(this.el);
+        this.world.el.appendChild(this.el);
 
         // Store the last position. It is useful in many games
         this.lastPosition;
@@ -205,17 +206,23 @@ W = Wandrian = {
 
 
     // A World is where things happen
-    World: function(sizeX, sizeY, selector, squareSize) {
-        this.el = $(selector);
-        this.el.addClass('w-world');
+    World: function(sizeX, sizeY, id, squareSize) {
+        this.el = document.getElementById(id);
+
+        if (!this.el.className) {
+            this.el.className = 'w-world';
+        }
+        else {
+            this.el.className += ' w-world';
+        }
 
         this.sizeX = sizeX;
         this.sizeY = sizeY;
 
         this.squareSize = squareSize;
 
-        this.el.width(squareSize * this.sizeX);
-        this.el.height(squareSize * this.sizeY);
+        this.el.style.width = (squareSize * this.sizeX) + 'px';
+        this.el.style.height = (squareSize * this.sizeY) + 'px';
 
         this.entityIdCounter = 0;
 
@@ -227,7 +234,7 @@ W = Wandrian = {
 
         // Permutations of all existing entities. Ex: if e1, e2, e3 exist in
         // the game, the permutations will be e1-e2, e1-e3 and e2-e3
-        this.entityPermutations;
+        this.entityPermutations = [];
 
         this.player;
 
@@ -315,13 +322,14 @@ W = Wandrian = {
                 for (var j=0; j<this.sizeY; j++) {
                     if (this.squares[i][j].entity == entity) {
                         // Remove from DOM
-                        entity.el.remove();
+                        entity.el.parentNode.removeChild(entity.el);
 
                         // Remove object
                         this.squares[i][j].setEntity(null);
 
                         // Remove from redundant entity array
-                        this.entities = _.without(this.entities, entity);
+                        var index = this.entities.indexOf(entity);
+                        this.entities.splice(index, 1);
 
                         this.updatePermutations();
 
@@ -416,7 +424,7 @@ W = Wandrian = {
             collisionHandlers
         ) {
             // Clean everything (in case of a restart)
-            this.el.empty();
+            this.el.innerHTML = '';
 
             this.squares = [];
             for (var i=0; i<this.sizeX; i++) {
@@ -447,7 +455,7 @@ W = Wandrian = {
                     var sq = this.getSquare(new Wandrian.Vector(j, i));
 
                     if (sq.el) {
-                        this.el.append(sq.el);
+                        this.el.appendChild(sq.el);
                     }
                 }
             }
@@ -550,8 +558,8 @@ W = Wandrian = {
                 if (!entity.dirty) { continue; }
 
                 if (entity) {
-                    entity.el[0].style.top = (this.squareSize * entity.square.position.y) + 'px';
-                    entity.el[0].style.left = (this.squareSize * entity.square.position.x) + 'px';
+                    entity.el.style.top = (this.squareSize * entity.square.position.y) + 'px';
+                    entity.el.style.left = (this.squareSize * entity.square.position.x) + 'px';
                 }
 
                 entity.dirty = false;
@@ -559,12 +567,12 @@ W = Wandrian = {
         };
 
         this.loop = function() {
-            console.time('loop');
+            // console.time('loop');
             this.loopEntities();
             this.loopHandleCollisions();
             this.loopMoveEveryone();
             this.loopRedraw();
-            console.timeEnd('loop');
+            // console.timeEnd('loop');
         };
     },
 
@@ -582,10 +590,28 @@ W = Wandrian = {
 
         this.events = {};
 
+        Wandrian.Game.Audio = {};
+
+        // Load resources in a static variable
+        if (gameData.resources) {
+            if (gameData.resources.audio) {
+                var audioResources = gameData.resources.audio;
+
+                for (var audio in audioResources) {
+                    var src = audioResources[audio].src;
+                    var loop = audioResources[audio].loop ? true : false;
+
+                    var wAudio = new Wandrian.Audio('audio/' + src, loop);
+                    Wandrian.Game.Audio[audio] = wAudio;
+                }
+            }
+        }
+
+
         this.world = new Wandrian.World(
             gameData.world.size.x,
             gameData.world.size.y,
-            gameData.world.selector,
+            gameData.world.id,
             gameData.world.squareSize
         );
 
@@ -632,10 +658,9 @@ W = Wandrian = {
             ];
 
             for (var event in this.events) {
-                if (!_.contains(gameEvents, event)) {
-                    $(document).on(
-                        event, this.events[event].bind(this)
-                    );
+                if (gameEvents.indexOf(event) == -1) {
+                    document.addEventListener(
+                        event, this.events[event].bind(this), false);
                 }
             }
 
@@ -665,9 +690,50 @@ W = Wandrian = {
                 this.loopInterval = setInterval(
                     this.loop.bind(this), this.loopPeriod);
             }
-        }
+        };
     },
 
+    /****************************** RESOURCES *******************************/
+
+    Audio: function(src, loop) {
+        this.src = src;
+
+        this.el = document.createElement('audio');
+        this.el.src = this.src;
+
+        this.setLoop = function(loop) {
+            this.el.loop = loop;
+        }
+
+        this.setLoop(loop);
+
+        this.play = function() {
+            this.el.play();
+        };
+
+        this.stop = function() {
+            this.el.pause();
+            this.el.currentTime = 0;
+        };
+
+        this.pause = function() {
+            this.el.pause();
+        };
+    },
+
+    Sprite: function(src, time, steps) {
+        this.src = src;
+        this.time = time;
+        this.steps = steps;
+
+        this.play = function() {
+
+        };
+
+        this.stop = function() {
+
+        };
+    },
 
     /******************************* BUILDERS *******************************/
 
@@ -677,11 +743,6 @@ W = Wandrian = {
 
             for (var p in params) {
                 this[p] = params[p];
-            }
-
-            // TODO - Not good
-            if (params.handleCollision) {
-                this.world.handleCollision = params.handleCollision;
             }
         }
     },
@@ -706,7 +767,7 @@ W = Wandrian = {
 
             // TODO - I don't like this here
             if (params.className) {
-                this.el.addClass(params.className);
+                this.el.className += ' ' + params.className;
             }
 
             if (this.init) {
@@ -724,16 +785,17 @@ W = Wandrian = {
             Wandrian.Square.call(this, position, world);
 
             // TODO - I don't like this here (should be in the constructor)
-            this.el = $('<div>').addClass('w-square');
+            this.el = document.createElement('div')
+            this.el.className = 'w-square';
 
-            this.el.width(world.squareSize);
-            this.el.height(world.squareSize);
+            this.el.style.width = world.squareSize + 'px';
+            this.el.style.height = world.squareSize + 'px';
 
-            this.el[0].style.top = (world.squareSize * position.y) + 'px';
-            this.el[0].style.left = (world.squareSize * position.x) + 'px';
+            this.el.style.top = (world.squareSize * position.y) + 'px';
+            this.el.style.left = (world.squareSize * position.x) + 'px';
 
             if (params.className) {
-                this.el.addClass(params.className);
+                this.el.className += ' ' + params.className;
             }
 
             for (var p in params) {
@@ -757,6 +819,8 @@ W = Wandrian = {
         Entity: 'EntityBuilder',
         Square: 'SquareBuilder',
         CollisionHandler: 'CollisionHandlerBuilder',
+        Audio: 'AudioBuilder',
+        Sprite: 'SpriteBuilder',
     },
 
     build: function(params) {

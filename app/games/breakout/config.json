@@ -24,7 +24,7 @@
       "x": 80,
       "y": 100
     },
-    "selector": ".world",
+    "id": "world",
     "squareSize": 5
   },
 

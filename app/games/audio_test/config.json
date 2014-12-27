@@ -1,0 +1,29 @@
+{
+  "squares": [],
+  "entities": [],
+
+  "collisionHandlers": [],
+
+  "world": {
+    "size": {
+      "x": 40,
+      "y": 40
+    },
+    "id": "world",
+    "squareSize": 10
+  },
+
+  "resources": {
+    "audio": {
+      "etherealSpace": {
+        "src": "snowflake_-_Ethereal_Space.mp3",
+        "loop": true
+      },
+      "happyEffect": {
+        "src": "happy_effect.mp3"
+      }
+    }
+  },
+
+  "loopPeriod": 50
+}

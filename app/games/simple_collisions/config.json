@@ -1091,7 +1091,7 @@
       "x": 160,
       "y": 160
     },
-    "selector": ".world",
+    "id": "world",
     "squareSize": 3
   },
 

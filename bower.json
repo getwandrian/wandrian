@@ -5,8 +5,7 @@
     "Michael Siegwarth <msiegwarth@gmail.com>"
   ],
   "dependencies": {
-    "jquery": "~2.1.1",
-    "underscore": "~1.7.0"
+    "jquery": "~2.1.1"
   },
   "devDependencies": {}
 }

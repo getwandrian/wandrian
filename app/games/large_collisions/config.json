@@ -33,7 +33,7 @@
       "x": 40,
       "y": 40
     },
-    "selector": ".world",
+    "id": "world",
     "squareSize": 10
   },
 

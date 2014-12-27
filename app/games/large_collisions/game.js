@@ -6,7 +6,7 @@ var Monster = W.build({
 
     init: function() {
         // Random color
-        this.el.css('background-color', "#"+((1<<24)*Math.random()|0).toString(16));
+        this.el.style.backgroundColor = "#"+((1<<24)*Math.random()|0).toString(16);
     },
 
     randomMove: function() {
@@ -52,7 +52,7 @@ var StillMonster = W.build({
 
     init: function() {
         // Random color
-        this.el.css('background-color', "#"+((1<<24)*Math.random()|0).toString(16));
+        this.el.style.backgroundColor = "#"+((1<<24)*Math.random()|0).toString(16);
     },
 });
 
